@@ -1,1 +1,20 @@
-<h1>hola</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My PetShop{% endblock title %}</title>
+</head>
+<body>
+    <!-- JINJA para incluir el navbar en todas las paginas -->
+    {% include "navbar.html" %}
+
+    <!-- Aqui va el contenido de la pagina -->
+    <div class="content">
+        {% block content %}
+        <!-- Aqui va el contenido de cada pagina -->
+        {% endblock content %}
+    </div>
+    
+</body>
+</html>

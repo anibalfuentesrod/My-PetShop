@@ -1,0 +1,17 @@
+<!-- login.html form let's goooo-->
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock title %}
+
+{% block content %}
+
+<h2>Login</h2>
+<form action="", method="POST">
+    {% csrf_token %}
+    {{ form }}
+    <button>
+        Login
+    </button>
+</form>
+
+{% endblock content %}
