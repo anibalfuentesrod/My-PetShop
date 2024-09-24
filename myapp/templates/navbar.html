@@ -1,22 +1,15 @@
 <!-- navbar.html (o dentro de base.html) -->
 <nav>
     <ul>
-        <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="{% url 'index' %}">Home</a></li>
         {% if user.is_authenticated %}
             <!-- Mostrar solo si el usuario está autenticado -->
-            <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+            <li><a href="{% url 'profile' %}">Profile</a></li>
             <li><a href="{% url 'logout' %}">Logout</a></li>
-            
-            <!-- Condicional para mostrar pedido -->
-            {% if orders.exists %}
-                <!-- Mostrar enlace al pedido si hay órdenes disponibles -->
-                <li><a href="{% url 'order_details' orders.first.id %}">View Order {{ orders.first.id }}</a></li>
-            {% else %}
-                <!-- Mostrar mensaje si no hay pedidos -->
-                <li>No Orders</li>
-            {% endif %}
+            <li><a href="{% url 'products' %}">Products</a></li>
         {% else %}
             <!-- Mostrar solo si el usuario NO está autenticado -->
+            <li><a href="{% url 'products' %}">Products</a></li>
             <li><a href="{% url 'login' %}">Login</a></li>
             <li><a href="{% url 'register' %}">Register</a></li>
         {% endif %}
