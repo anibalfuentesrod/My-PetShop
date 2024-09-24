@@ -1,0 +1,15 @@
+<!-- user_profile.html -->
+{% extends 'base.html' %}
+
+{% block title %}User Profile{% endblock %}
+
+{% block content %}
+<h2>Hello, {{ username }}!!</h2>
+
+
+<p><strong>Username:</strong> {{ username }}</p>
+<p><strong>Email:</strong> {{ user.email }}</p>
+<p><strong>Member since:</strong> {{ date_joined|date:"F j, Y" }}</p>
+
+
+{% endblock %}
