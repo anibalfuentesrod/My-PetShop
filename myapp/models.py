@@ -1,9 +1,12 @@
 from django.db import models
 from django.conf import settings
+import stripe
 
 
 # Create your models here.
 ####################################################################################
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 class Product(models.Model):
     name = models.CharField(max_length=255)
@@ -14,9 +17,25 @@ class Product(models.Model):
     category = models.ForeignKey('Category', on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-
+    stripe_price_id = models.CharField(max_length=255, null=True, blank=True)
+    
+    def save(self, *args, **kwargs):
+        # solo crear en stripe si no tiene un 'stripe_id'
+        if not self.stripe_price_id:
+            stripe_product = stripe.Product.create(
+                name=self.name,
+                description=self.description,
+            )
+            stripe_price = stripe.Price.create(
+                product=stripe_product.id,
+                unit_amount=int(self.price * 100),
+                currency='usd',
+            )
+            self.stripe_price_id = stripe_price.id
+        super().save(*args, **kwargs)
+    
     def __str__(self) -> str:
-        return self.name # quizas añadir cual es el stock
+        return f"{self.name} (Stock: {self.stock})"
 
 #####################################################################################
 
