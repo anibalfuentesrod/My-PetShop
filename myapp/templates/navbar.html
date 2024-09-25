@@ -1,17 +1,27 @@
 <!-- navbar.html (o dentro de base.html) -->
-<nav>
-    <ul>
+<!-- Load static files -->
+{% load static %}
+<nav class="navbar">
+    <div class="logo">
+        <a href="{% url 'index' %}">My<img src="{% static 'images/logo.png' %}" alt="Paw Print Logo" class="paw-logo">Petshop</a>
+    </div>
+    <ul class="nav-links">
         <li><a href="{% url 'index' %}">Home</a></li>
+        <li><a href="{% url 'products' %}">Products</a></li>
         {% if user.is_authenticated %}
             <!-- Mostrar solo si el usuario está autenticado -->
             <li><a href="{% url 'profile' %}">Profile</a></li>
             <li><a href="{% url 'logout' %}">Logout</a></li>
-            <li><a href="{% url 'products' %}">Products</a></li>
         {% else %}
             <!-- Mostrar solo si el usuario NO está autenticado -->
-            <li><a href="{% url 'products' %}">Products</a></li>
             <li><a href="{% url 'login' %}">Login</a></li>
             <li><a href="{% url 'register' %}">Register</a></li>
         {% endif %}
     </ul>
+    <!-- Hamburger menu for mobile view -->
+    <div class="hamburger">
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
 </nav>
