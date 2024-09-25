@@ -14,7 +14,10 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 # HOME Page
 ############################################################################################
 def index(request):
-    return render(request, 'index.html')
+    username = request.user
+    return render(request, 'index.html', {
+        'username': username
+    })
 ############################################################################################
 # Registro de Usuario
 ############################################################################################
@@ -70,16 +73,14 @@ def user_profile(request):
 ############################################################################################
 def products(request):
     products = Product.objects.all()
-    print(products)
     return render(request, 'products.html', {
         'products': products
     })
 ############################################################################################
 # Los detalles de los productos
 ############################################################################################
-@login_required
-def product_detail(request, order_id):
-    product = get_object_or_404(Order, id=order_id)
+def product_detail(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
     return render(request, 'product_detail.html', {
         'product': product
     })
