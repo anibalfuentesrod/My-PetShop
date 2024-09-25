@@ -15,11 +15,19 @@
 {% endif %}
 
 <!-- Botón de compra -->
+{% if user.is_authenticated %}
 <button id="checkout-button" class="checkout-button" data-product-id="{{ product.id }}">
     Buy
 </button>
+{% else %}
+
+<button onclick="window.location.href='{% url "register" %}'">
+    <p>Tienes q tener cuenta para poder comprar</p>
+</button>
+{% endif %}
 
 <!-- Stripe JS -->
+{% if user.is_authenticated %}
 <script src="https://js.stripe.com/v3/"></script>
 <script type="text/javascript">
     const stripe = Stripe('{{ STRIPE_PUBLISHABLE_KEY }}');
@@ -49,5 +57,6 @@
         });
     });
 </script>
+{% endif %}
 
 {% endblock content %}
