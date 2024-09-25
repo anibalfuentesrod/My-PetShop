@@ -3,12 +3,21 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login as auth_login, logout
 from django.contrib.auth.decorators import login_required
 from .models import Order, Product
+from django.views import View
+import stripe
+from django.conf import settings
+from django.http import JsonResponse
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
 # Create your views here.
 ############################################################################################
 # HOME Page
 ############################################################################################
 def index(request):
-    return render(request, 'index.html')
+    username = request.user
+    return render(request, 'index.html', {
+        'username': username
+    })
 ############################################################################################
 # Registro de Usuario
 ############################################################################################
@@ -70,12 +79,45 @@ def products(request):
 ############################################################################################
 # Los detalles de los productos
 ############################################################################################
-@login_required
-def product_detail(request, order_id):
-    product = get_object_or_404(Order, id=order_id)
+def product_detail(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
     return render(request, 'product_detail.html', {
         'product': product
     })
 ############################################################################################
-#
+# Checkout Session Let's goo
+############################################################################################
+
+class CreateCheckoutSessionView(View):
+    def post(self, request, *args, **kwargs):
+        product_id = self.kwargs['pk']
+        product = get_object_or_404(Product, id=product_id)
+        
+        try:
+            checkout_session = stripe.checkout.Session.create(
+                line_items=[
+                    {
+                        'price': product.stripe_price_id,
+                        'quantity': 1,
+                    },
+                ],
+                mode='payment',
+                success_url=settings.YOUR_DOMAIN + '/success/',
+                cancel_url=settings.YOUR_DOMAIN + '/cancel/',
+            )
+            return JsonResponse({
+                'id': checkout_session.id
+            })
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+############################################################################################
+# Success Form si el pago fue exitoso
+############################################################################################
+def success_view(request):
+    return render(request, 'success.html')
+############################################################################################
+# Cancel form si quieres cancelar el pago
+############################################################################################
+def cancel_view(request):
+    return render(request, 'cancel.html')
 ############################################################################################

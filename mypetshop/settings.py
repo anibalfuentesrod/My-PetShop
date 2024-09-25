@@ -16,8 +16,11 @@ from decouple import config
 
 
 # Stripe settings
+YOUR_DOMAIN = 'http://localhost:8000'
 STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
 STRIPE_PUBLISHABLE_KEY = config('STRIPE_PUBLISHABLE_KEY')
+STRIPE_WEBHOOK_SECRET = ""
+
 
 DEBUG = config('DEBUG', default=False, cast=bool)
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
