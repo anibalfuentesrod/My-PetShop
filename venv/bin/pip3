@@ -1,4 +1,4 @@
-#!/Users/anibalfuentes/My-PetShop/venv/bin/python3.12
+#!/home/kryssbm99/projects/My-PetShop/venv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys
