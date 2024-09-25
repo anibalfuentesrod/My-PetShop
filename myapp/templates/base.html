@@ -5,28 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Everything your pet needs, all in one place.">
     <title>{% block title %}My PetShop{% endblock title %}</title>
-     <!-- Load static files -->
-     {% load static %}
+    <!-- Load static files -->
+    {% load static %}
 
-     <!-- Link to CSS -->
-     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <!-- Link to CSS -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
     <!-- JINJA para incluir el navbar en todas las paginas -->
     {% include "navbar.html" %}
 
-     <!-- Main header/banner -->
-     <header class="main-header">
+    <!-- Main header/banner -->
+    <header class="main-header">
         <div class="header-top">
             <div class="container">
                 <p>FREE DELIVERY OVER $40</p>
             </div>
         </div>
+
+        <!-- Muestra el mensaje (Welcome) solo en Homepage(pagina principal)-->
+        {% if request.path == "/" %}
         <div class="logo-section">
             <div class="container">
-                <h1>Welcome! {{ username }} </h1>
+                    {% if user.is_authenticated %}
+                        <h1>Welcome! {{ username }} </h1>
+                    {% else %}
+                        <h1>Welcome!, Guest</h1>
+                    {% endif %}
             </div>
         </div>
+        {% endif %}
     </header>
 
     <!-- Aqui va el contenido de la pagina -->

@@ -122,8 +122,5 @@ def success_view(request):
 def cancel_view(request):
     return render(request, 'cancel.html')
 ############################################################################################
-def base(request):
-    username = request.user
-    return render(request, 'base.html', {
-        'username': username
-    })
+# 
+############################################################################################
