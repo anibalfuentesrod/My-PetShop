@@ -82,7 +82,8 @@ def products(request):
 def product_detail(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     return render(request, 'product_detail.html', {
-        'product': product
+        'product': product,
+        'STRIPE_PUBLISHABLE_KEY': settings.STRIPE_PUBLISHABLE_KEY,
     })
 ############################################################################################
 # Checkout Session Let's goo
