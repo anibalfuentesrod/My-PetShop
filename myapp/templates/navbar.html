@@ -1,6 +1,7 @@
 <!-- navbar.html (o dentro de base.html) -->
 <!-- Load static files -->
 {% load static %}
+{% load socialaccount %}
 <nav class="navbar">
     <div class="logo">
         <a href="{% url 'index' %}">My<img src="{% static 'images/logo.png' %}" alt="Paw Print Logo" class="paw-logo">Petshop</a>
@@ -14,8 +15,7 @@
             <li><a href="{% url 'logout' %}">Logout</a></li>
         {% else %}
             <!-- Mostrar solo si el usuario NO está autenticado -->
-            <li><a href="{% url 'login' %}">Login</a></li>
-            <li><a href="{% url 'register' %}">Register</a></li>
+            <li><a href="{% provider_login_url 'google' %}?next={% url 'index' %}">Login</a></li>
         {% endif %}
     </ul>
     <!-- Hamburger menu for mobile view -->

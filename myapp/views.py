@@ -7,6 +7,10 @@ from django.views import View
 import stripe
 from django.conf import settings
 from django.http import JsonResponse
+from django.dispatch import receiver
+from allauth.account.signals import user_logged_in
+from .models import UserProfile
+from django.http import Http404
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 # Create your views here.
@@ -19,54 +23,26 @@ def index(request):
         'username': username
     })
 ############################################################################################
-# Registro de Usuario
-############################################################################################
-def register(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            auth_login(request, user)
-            return redirect('index')
-    else:
-        form = UserCreationForm()
-    
-    return render(request, 'register.html', {
-        'form': form
-    })
-
-############################################################################################
-# Inicio de Sesión
-############################################################################################
-def login_form(request):
-    if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            auth_login(request, user)
-            return redirect('profile')
-    else:
-        form = AuthenticationForm()
-    
-    return render(request, 'login.html', {
-        'form': form
-    })
-############################################################################################
 # Cerrar la Sesión
 ############################################################################################
 def logout_form(request):
     logout(request)
-    return redirect('login')
+    return redirect('index')
 ############################################################################################
 # Vista Protegida: Dashboard del Usuario
 ############################################################################################
 @login_required
 def user_profile(request):
     user = request.user
+    try:
+        user_profile = UserProfile.objects.get(user=user)
+    except UserProfile.DoesNotExist:
+        raise Http404("UserProfile does not exist for this user.")
+    
     return render(request, 'user_profile.html', {
         'username': user.username,
-        'email': user.email,
-        'date_joined': user.date_joined
+        'email': user_profile.email,
+        'date_joined': user.date_joined,
     })
 ############################################################################################
 # Todos los productos
@@ -124,3 +100,21 @@ def cancel_view(request):
 ############################################################################################
 # 
 ############################################################################################
+@receiver(user_logged_in)
+def save_user_profile(sender, request, user, **kwargs):
+    google_account = user.socialaccount_set.filter(provider='google').first()
+    if google_account:
+        extra_data = google_account.extra_data
+        profile_image = extra_data.get('picture', '')
+        email = extra_data.get('email', '')
+        if not email:
+            print("Email not found in extra_data")
+
+        UserProfile.objects.update_or_create(
+            user=user,
+            defaults={
+                'profile_image': profile_image,
+                'google_id': google_account.uid,
+                'email': email,
+            }
+        )
