@@ -3,15 +3,12 @@
 
 {% block title %}Login{% endblock title %}
 
+{% load socialaccount %}
+
 {% block content %}
-
-<h2>Login</h2>
-<form action="", method="POST">
+<h2>Login via Google</h2>
+<form action="" method="POST">
     {% csrf_token %}
-    {{ form }}
-    <button>
-        Login
-    </button>
+    <a href="{% provider_login_url 'google' %}?next=/">Login</a>
 </form>
-
 {% endblock content %}

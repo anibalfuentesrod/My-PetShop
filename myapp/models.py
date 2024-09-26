@@ -1,11 +1,24 @@
 from django.db import models
 from django.conf import settings
 import stripe
+from django.contrib.auth.models import User
+from django.dispatch import receiver
+from allauth.account.signals import user_logged_in
 
 
 # Create your models here.
 ####################################################################################
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    profile_image = models.URLField(blank=True, null=True)
+    google_id = models.CharField(max_length=100, unique=True)
+    email = models.EmailField(blank=True, null=True)
+    
+    def __str__(self) -> str:
+        return f"{self.user}, email: {self.email}"
 
+
+####################################################################################
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 class Product(models.Model):
