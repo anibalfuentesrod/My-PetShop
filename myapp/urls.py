@@ -4,8 +4,6 @@ from .views import CreateCheckoutSessionView
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('register/', views.register, name='register'),
-    path('login/', views.login_form, name='login'),
     path('logout/', views.logout_form, name='logout'),
     path('profile/', views.user_profile, name='profile'),
     path('products/', views.products, name='products'),
