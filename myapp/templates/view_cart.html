@@ -28,8 +28,15 @@
 </table>
 <p>Total Price: ${{ total_price|floatformat:2 }}</p>
 
-<!-- Checkout Button -->
-<button id="checkout-button">Proceed to Checkout</button>
+<!-- Check if the user has a shipping address -->
+{% if shipping_address %}
+    <p>Shipping to: {{ shipping_address.direccion }}, {{ shipping_address.ciudad }}, {{ shipping_address.estado }}, {{ shipping_address.country }}</p>
+    <!-- Checkout Button -->
+    <button id="checkout-button">Proceed to Checkout</button>
+{% else %}
+    <p>You need to <a href="{% url 'shipping_address' %}">add a shipping address</a> before proceeding to checkout.</p>
+{% endif %}
+
 
 <!-- Stripe JS -->
 <script src="https://js.stripe.com/v3/"></script>
@@ -46,8 +53,12 @@
         .then(function (response) {
             return response.json();
         })
-        .then(function (sessionId) {
-            return stripe.redirectToCheckout({ sessionId: sessionId.id });
+        .then(function (data) {
+            if (data.error) {
+                alert(data.error);
+            } else {
+                return stripe.redirectToCheckout({ sessionId: data.id });
+            }
         })
         .then(function (result) {
             if (result.error) {
