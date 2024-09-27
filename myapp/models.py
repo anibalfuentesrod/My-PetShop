@@ -29,6 +29,7 @@ class Product(models.Model):
     image = models.ImageField(upload_to='products/', blank=True, null=True)
     category = models.ForeignKey('Category', on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    weight = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     stripe_price_id = models.CharField(max_length=255, null=True, blank=True)
     
@@ -48,7 +49,7 @@ class Product(models.Model):
         super().save(*args, **kwargs)
     
     def __str__(self) -> str:
-        return f"{self.name} (Stock: {self.stock})"
+        return f"{self.name} (Stock: {self.stock}, Weight: {self.weight} lbs)"
 
 #####################################################################################
 
@@ -109,3 +110,26 @@ class Payment(models.Model):
         return f"Payment {self.id} for Order {self.order.id}"
 
 #####################################################################################
+
+class Cart(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self) -> str:
+        return f"Cart of {self.user.username}"
+
+    def total_items(self):
+        return sum(item.quantity for item in self.cartitem_set.all())
+    
+    def total_price(self):
+        return sum(item.product.price * item.quantity for item in self.cartitem_set.all())
+
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+
+    def __str__(self) -> str:
+        return f"{self.quantity} of {self.product.name} in {self.cart.user.username}'s cart"
