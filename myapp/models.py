@@ -4,6 +4,7 @@ import stripe
 from django.contrib.auth.models import User
 from django.dispatch import receiver
 from allauth.account.signals import user_logged_in
+from django.core.exceptions import ValidationError
 
 
 # Create your models here.
@@ -53,6 +54,7 @@ class Product(models.Model):
 
 #####################################################################################
 
+
 #####################################################################################
 
 class Category(models.Model):
@@ -66,21 +68,33 @@ class Category(models.Model):
 
 #####################################################################################
 
+class ShippingAddress(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    direccion = models.CharField(max_length=255)
+    ciudad = models.CharField(max_length=100)
+    estado = models.CharField(max_length=100)
+    codigo_postal = models.CharField(max_length=20)
+    country = models.CharField(max_length=100, default="Puerto Rico", editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def clean(self):
+        if self.country != "Puerto Rico":
+            raise ValidationError("Shipping is only available in Puerto Rico.")
+
+    def __str__(self):
+        return f"{self.direccion}, {self.ciudad}, {self.estado}, {self.codigo_postal}, {self.country}"
+
 #####################################################################################
 
 class Order(models.Model):
     customer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    shipping_address = models.ForeignKey(ShippingAddress, on_delete=models.SET_NULL, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
     is_paid = models.BooleanField(default=False)
 
-    def __str__(self) -> str:
-        return f"Order {self.id} by {self.customer.username}"
-    
-    def calculate_total(self):
-        total = sum(item.price * item.quantity for item in self.orderitem_set.all())
-        self.total_price = total
-        self.save()
+    def __str__(self):
+        return f"Order '{self.id}' by '{self.customer.username}', fecha: {self.created_at}"
 #####################################################################################
 
 #####################################################################################
@@ -88,11 +102,11 @@ class Order(models.Model):
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quiantity = models.PositiveIntegerField()
+    quantity = models.PositiveIntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self) -> str:
-        return f"{self.quiantity} x {self.product.name} in Order {self.order.id}"
+        return f"'{self.quantity}' x {self.product.name} in Order id: '{self.order.id}'"
 
 
 #####################################################################################
