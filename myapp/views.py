@@ -2,7 +2,8 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login as auth_login, logout
 from django.contrib.auth.decorators import login_required
-from .models import Order, Product
+from .models import Order, Product, Cart, CartItem, Category, ShippingAddress, OrderItem
+from .forms import ShippingAddressForm
 from django.views import View
 import stripe
 from django.conf import settings
@@ -12,7 +13,6 @@ from allauth.account.signals import user_logged_in
 from .models import UserProfile
 from django.http import Http404
 
-stripe.api_key = settings.STRIPE_SECRET_KEY
 # Create your views here.
 ############################################################################################
 # HOME Page
@@ -48,10 +48,21 @@ def user_profile(request):
 # Todos los productos
 ############################################################################################
 def products(request):
-    products = Product.objects.all()
-    return render(request, 'products.html', {
-        'products': products
-    })
+    categories = Category.objects.all()
+    
+    category_id = request.GET.get('category', None)
+    
+    if category_id:
+        products = Product.objects.filter(category_id=category_id)
+    else:
+        products = Product.objects.all()
+
+    context = {
+        'products': products,
+        'categories': categories,
+        'selected_category': category_id
+    }
+    return render(request, 'products.html', context)
 ############################################################################################
 # Los detalles de los productos
 ############################################################################################
@@ -59,39 +70,113 @@ def product_detail(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     return render(request, 'product_detail.html', {
         'product': product,
-        'STRIPE_PUBLISHABLE_KEY': settings.STRIPE_PUBLISHABLE_KEY,
     })
 ############################################################################################
 # Checkout Session Let's goo
 ############################################################################################
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 class CreateCheckoutSessionView(View):
     def post(self, request, *args, **kwargs):
-        product_id = self.kwargs['pk']
-        product = get_object_or_404(Product, id=product_id)
-        
+        # Check if the user has a shipping address
+        try:
+            shipping_address = ShippingAddress.objects.get(user=request.user)
+        except ShippingAddress.DoesNotExist:
+            return redirect('shipping_address')  # Redirect to shipping address form
+
+        # Check if it's a single product or cart checkout
+        product_id = kwargs.get('pk')
+        if product_id:
+            # Single product checkout
+            product = get_object_or_404(Product, id=product_id)
+            line_items = [{
+                'price': product.stripe_price_id,
+                'quantity': 1,
+            }]
+        else:
+            # Cart checkout
+            cart = Cart.objects.get(user=request.user)
+            cart_items = cart.cartitem_set.all()
+            line_items = [
+                {
+                    'price': item.product.stripe_price_id,
+                    'quantity': item.quantity,
+                } for item in cart_items
+            ]
+
+        # Prepare shipping options
+        shipping_options = [{
+            'shipping_rate_data': {
+                'type': 'fixed_amount',
+                'fixed_amount': {'amount': 500, 'currency': 'usd'},
+                'display_name': 'Standard shipping',
+                'delivery_estimate': {
+                    'minimum': {'unit': 'business_day', 'value': 5},
+                    'maximum': {'unit': 'business_day', 'value': 7},
+                },
+            }
+        }]
+
+        # Ensure that user has a valid email
+        email = request.user.email
+        if not email:
+            # Fallback to user profile email if available
+            try:
+                user_profile = UserProfile.objects.get(user=request.user)
+                email = user_profile.email
+            except UserProfile.DoesNotExist:
+                email = None
+
+        if not email:
+            return JsonResponse({'error': 'No valid email associated with user'}, status=400)
+
         try:
             checkout_session = stripe.checkout.Session.create(
-                line_items=[
-                    {
-                        'price': product.stripe_price_id,
-                        'quantity': 1,
-                    },
-                ],
+                payment_method_types=['card'],
+                line_items=line_items,
                 mode='payment',
+                shipping_address_collection={
+                    'allowed_countries': ['PR'],
+                },
+                shipping_options=shipping_options,
+                customer_email=email,  # Use the verified email
                 success_url=settings.YOUR_DOMAIN + '/success/',
                 cancel_url=settings.YOUR_DOMAIN + '/cancel/',
             )
-            return JsonResponse({
-                'id': checkout_session.id
-            })
+            return JsonResponse({'id': checkout_session.id})
         except Exception as e:
+            # Log the error
+            print(f"Stripe Checkout Session Error: {str(e)}")
             return JsonResponse({'error': str(e)}, status=400)
 ############################################################################################
 # Success Form si el pago fue exitoso
 ############################################################################################
+@login_required
 def success_view(request):
-    return render(request, 'success.html')
+    cart = Cart.objects.get(user=request.user)
+    cart_items = cart.cartitem_set.all()
+
+    # Create a new order
+    order = Order.objects.create(
+        customer=request.user,
+        shipping_address=ShippingAddress.objects.get(user=request.user),
+        total_price=cart.total_price(),  # Assuming this function exists in your cart model
+        is_paid=True,  # Mark order as paid
+    )
+
+    # Add cart items to the order
+    for item in cart_items:
+        OrderItem.objects.create(
+            order=order,
+            product=item.product,
+            quantity=item.quantity,
+            price=item.product.price
+        )
+
+    # Clear the cart after order is placed
+    cart.cartitem_set.all().delete()
+
+    return render(request, 'success.html', {'order': order})
 ############################################################################################
 # Cancel form si quieres cancelar el pago
 ############################################################################################
@@ -118,3 +203,71 @@ def save_user_profile(sender, request, user, **kwargs):
                 'email': email,
             }
         )
+############################################################################################
+# When user adds item to cart
+############################################################################################
+@login_required
+def add_to_cart(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+
+    cart, created = Cart.objects.get_or_create(user=request.user)
+
+    cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
+
+    if not created:
+        # if item already exists, increa it's quantity
+        cart_item.quantity += 1
+        cart_item.save()
+
+    return redirect('view_cart')
+############################################################################################
+# This view displays the user's cart, including all items and the total price
+############################################################################################
+@login_required
+def view_cart(request):
+    cart, created = Cart.objects.get_or_create(user=request.user)
+    cart_items = cart.cartitem_set.all()
+    total_price = cart.total_price()
+    
+    try:
+        shipping_address = ShippingAddress.objects.get(user=request.user)
+    except ShippingAddress.DoesNotExist:
+        shipping_address = None
+
+    context = {
+        'cart_items': cart_items,
+        'total_price': total_price,
+        'shipping_address': shipping_address,
+    }
+
+    return render(request, 'view_cart.html', context)
+############################################################################################
+# remove item from cart view
+############################################################################################
+def remove_from_cart(request, item_id):
+    cart_item = get_object_or_404(CartItem, id=item_id, cart__user=request.user)
+    cart_item.delete()
+
+    return redirect('view_cart')
+############################################################################################
+# Funcion para añadir o editar el shipping address
+############################################################################################
+@login_required
+def shipping_address_view(request):
+    try:
+        shipping_address = ShippingAddress.objects.get(user=request.user)
+    except ShippingAddress.DoesNotExist:
+        shipping_address = None
+
+    if request.method == 'POST':
+        form = ShippingAddressForm(request.POST, instance=shipping_address)
+        if form.is_valid():
+            shipping_address = form.save(commit=False)
+            shipping_address.user = request.user
+            shipping_address.save()
+            return redirect('view_cart')
+    else:
+        form = ShippingAddressForm(instance=shipping_address)
+    return render(request, 'shipping_address.html', {
+        'form': form
+        })
