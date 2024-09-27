@@ -8,22 +8,27 @@
 <p><strong>Price:</strong> ${{ product.price }}</p>
 <p><strong>Description:</strong> {{ product.description }}</p>
 <p><strong>In Stock:</strong>{{ product.stock }}</p>
+<p><strong>Weight:</strong> {{ product.weight }} lbs</p>
 
-<!-- Mostrar imagen si existe -->
+<!-- Show image if it exists -->
 {% if product.image %}
     <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 200px; height: auto;">
 {% endif %}
 
-<!-- Botón de compra -->
+<!-- Show buttons based on user's login status -->
 {% if user.is_authenticated %}
-<button id="checkout-button" class="checkout-button" data-product-id="{{ product.id }}">
-    Buy
-</button>
+    <button id="checkout-button" class="checkout-button" data-product-id="{{ product.id }}">
+        Buy Now
+    </button>
+    
+    <!-- Add to Cart Button -->
+    <button id="add-to-cart-button" data-product-id="{{ product.id }}">
+        Add to Cart
+    </button>
 {% else %}
-
-<button onclick="window.location.href='{% url "register" %}'">
-    <p>Tienes q tener cuenta para poder comprar</p>
-</button>
+    <button onclick="window.location.href='{% url "register" %}'">
+        <p>You must have an account to purchase</p>
+    </button>
 {% endif %}
 
 <!-- Stripe JS -->
@@ -50,6 +55,28 @@
         .then(function (result) {
             if (result.error) {
                 alert(result.error.message);
+            }
+        })
+        .catch(function (error) {
+            console.error("Error:", error);
+        });
+    });
+
+    // Add to Cart functionality
+    document.getElementById('add-to-cart-button').addEventListener('click', function () {
+        const productId = this.dataset.productId;
+
+        fetch(`/cart/add/${productId}/`, {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}",
+            },
+        })
+        .then(function (response) {
+            if (response.ok) {
+                alert("Product added to cart!");
+            } else {
+                alert("Failed to add product to cart.");
             }
         })
         .catch(function (error) {

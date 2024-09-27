@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Cart{% endblock title %}
+
+{% block content %}
+<h2>Your Cart</h2>
+
+<!-- Check if the cart has any items -->
+{% if cart_items %}
+<table>
+    <tr>
+        <th>Product</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th>Total</th>
+        <th>Actions</th>
+    </tr>
+    {% for item in cart_items %}
+    <tr>
+        <td>{{ item.product.name }}</td>
+        <td>${{ item.product.price }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>${{ item.product.price|floatformat:2 }}</td>
+        <td>
+            <a href="{% url 'remove_from_cart' item.id %}">Remove</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+<p>Total Price: ${{ total_price|floatformat:2 }}</p>
+
+<!-- Checkout Button -->
+<button id="checkout-button">Proceed to Checkout</button>
+
+<!-- Stripe JS -->
+<script src="https://js.stripe.com/v3/"></script>
+<script type="text/javascript">
+    const stripe = Stripe('{{ STRIPE_PUBLISHABLE_KEY }}');
+
+    document.getElementById('checkout-button').addEventListener('click', function () {
+        fetch("/create-checkout-session/", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}",
+            },
+        })
+        .then(function (response) {
+            return response.json();
+        })
+        .then(function (sessionId) {
+            return stripe.redirectToCheckout({ sessionId: sessionId.id });
+        })
+        .then(function (result) {
+            if (result.error) {
+                alert(result.error.message);
+            }
+        })
+        .catch(function (error) {
+            console.error("Error:", error);
+        });
+    });
+</script>
+{% else %}
+<p>Your cart is empty.</p>
+{% endif %}
+
+{% endblock content %}
