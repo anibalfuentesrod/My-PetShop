@@ -12,6 +12,7 @@ from django.dispatch import receiver
 from allauth.account.signals import user_logged_in
 from .models import UserProfile
 from django.http import Http404
+import json
 
 # Create your views here.
 ############################################################################################
@@ -209,17 +210,27 @@ def save_user_profile(sender, request, user, **kwargs):
 @login_required
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-
     cart, created = Cart.objects.get_or_create(user=request.user)
 
-    cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
+    # Parse the quantity from the request body (default to 1 if not provided)
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            quantity = int(data.get('quantity', 1))
+        except (ValueError, KeyError, json.JSONDecodeError):
+            return JsonResponse({"error": "Invalid quantity provided."}, status=400)
 
-    if not created:
-        # if item already exists, increa it's quantity
-        cart_item.quantity += 1
+        cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
+
+        if created:
+            cart_item.quantity = quantity  # Set the new quantity
+        else:
+            cart_item.quantity += quantity  # Increment the quantity if it exists
+
         cart_item.save()
 
-    return redirect('view_cart')
+        return JsonResponse({"message": f"{quantity} item(s) added to cart successfully."})
+    return JsonResponse({"error": "Invalid request method."}, status=400)
 ############################################################################################
 # This view displays the user's cart, including all items and the total price
 ############################################################################################
