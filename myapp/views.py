@@ -105,7 +105,7 @@ class CreateCheckoutSessionView(View):
                 } for item in cart_items
             ]
 
-        # Prepare shipping options
+        # Prepare shipping options (You can add more options here as needed)
         shipping_options = [{
             'shipping_rate_data': {
                 'type': 'fixed_amount',
@@ -117,6 +117,14 @@ class CreateCheckoutSessionView(View):
                 },
             }
         }]
+
+        # Allow a variety of countries, including the user's selected country
+        allowed_countries = ['US', 'PR', 'CA', 'GB', 'MX', 'AU']  # Add other Stripe-supported countries
+        user_country = shipping_address.country
+
+        # Ensure that the user's country is included in allowed countries
+        if user_country not in allowed_countries:
+            allowed_countries.append(user_country)
 
         # Ensure that user has a valid email
         email = request.user.email
@@ -137,7 +145,7 @@ class CreateCheckoutSessionView(View):
                 line_items=line_items,
                 mode='payment',
                 shipping_address_collection={
-                    'allowed_countries': ['PR'],
+                    'allowed_countries': allowed_countries,
                 },
                 shipping_options=shipping_options,
                 customer_email=email,  # Use the verified email
@@ -197,7 +205,7 @@ def save_user_profile(sender, request, user, **kwargs):
             print("Email not found in extra_data")
 
         UserProfile.objects.update_or_create(
-            user=user,
+            google_id=google_account.uid,
             defaults={
                 'profile_image': profile_image,
                 'google_id': google_account.uid,
@@ -279,6 +287,7 @@ def shipping_address_view(request):
             return redirect('view_cart')
     else:
         form = ShippingAddressForm(instance=shipping_address)
+
     return render(request, 'shipping_address.html', {
         'form': form
-        })
+    })
