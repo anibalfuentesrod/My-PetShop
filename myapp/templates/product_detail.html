@@ -4,11 +4,10 @@
 {% block title %}Product Details{% endblock title %}
 
 {% block content %}
-
 <h2>{{ product.name }}</h2>
 <p><strong>Price:</strong> ${{ product.price }}</p>
 <p><strong>Description:</strong> {{ product.description }}</p>
-<p><strong>In Stock:</strong>{{ product.stock }}</p>
+<p><strong>Available:</strong> {{ product.available }}</p>
 <p><strong>Weight:</strong> {{ product.weight }} lbs</p>
 
 <!-- Show image if it exists -->
@@ -18,12 +17,12 @@
 
 <!-- Show buttons based on user's login status -->
 {% if user.is_authenticated %}
-    <!-- Remove the Buy Now button -->
-    
-    <!-- Add to Cart Button -->
-    <button id="add-to-cart-button" data-product-id="{{ product.id }}">
-        Add to Cart
-    </button>
+    <!-- Add to Cart Section -->
+    <form id="add-to-cart-form" method="POST" onsubmit="return false;">
+        <label for="quantity">Quantity:</label>
+        <input type="number" id="quantity" name="quantity" value="1" min="1">
+        <button type="submit">Add to Cart</button>
+    </form>
 {% else %}
     <!-- Redirect to Google login instead of registration -->
     <button onclick="window.location.href='{% provider_login_url 'google' %}?next={% url 'product_detail' product.id %}'">
@@ -31,30 +30,47 @@
     </button>
 {% endif %}
 
-<!-- Add to Cart functionality only -->
-{% if user.is_authenticated %}
+{% endblock content %}
+
+{% block extra_js %}
+<!-- Add to Cart functionality -->
+{% if user.is_authenticated and product.available %}
 <script type="text/javascript">
-    document.getElementById('add-to-cart-button').addEventListener('click', function () {
-        const productId = this.dataset.productId;
+    document.getElementById('add-to-cart-form').addEventListener('submit', function (e) {
+        e.preventDefault();  // Prevent default form submission behavior
+        console.log("Add to Cart button clicked.");  // Log when the button is clicked
+
+        const productId = {{ product.id }};
+        const quantity = document.getElementById('quantity').value || 1;  // Get quantity, default to 1
+
+        console.log("Product ID:", productId);  // Debugging log
+        console.log("Quantity:", quantity);  // Debugging log
 
         fetch(`/cart/add/${productId}/`, {
             method: "POST",
             headers: {
                 "X-CSRFToken": "{{ csrf_token }}",
+                "Content-Type": "application/json"
             },
+            body: JSON.stringify({ quantity: quantity })  // Send quantity as part of the request
         })
         .then(function (response) {
-            if (response.ok) {
-                alert("Product added to cart!");
-            } else {
-                alert("Failed to add product to cart.");
+            console.log("Fetch response:", response);  // Debugging log for fetch response
+            return response.json();
+        })
+        .then(function (data) {
+            console.log("Fetch data:", data);  // Log the response data
+
+            if (data.message) {
+                alert(data.message);  // Show success message
+            } else if (data.error) {
+                alert(data.error);  // Show error message if available
             }
         })
         .catch(function (error) {
-            console.error("Error:", error);
+            console.error("Error:", error);  // Log any error
         });
     });
 </script>
 {% endif %}
-
-{% endblock content %}
+{% endblock extra_js %}
