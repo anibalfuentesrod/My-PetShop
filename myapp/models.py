@@ -73,16 +73,12 @@ class ShippingAddress(models.Model):
     ciudad = models.CharField(max_length=100)
     estado = models.CharField(max_length=100)
     codigo_postal = models.CharField(max_length=20)
-    country = models.CharField(max_length=100, default="Puerto Rico", editable=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-
+    country = models.CharField(max_length=100)  # No default value
+    
     def clean(self):
-        if self.country != "Puerto Rico":
-            raise ValidationError("Shipping is only available in Puerto Rico.")
-
-    def __str__(self):
-        return f"{self.direccion}, {self.ciudad}, {self.estado}, {self.codigo_postal}, {self.country}"
-
+        allowed_countries = ['US', 'PR', 'CA']  # List of allowed countries
+        if self.country not in allowed_countries:
+            raise ValidationError(f"Shipping to {self.country} is not supported.")
 #####################################################################################
 
 class Order(models.Model):
