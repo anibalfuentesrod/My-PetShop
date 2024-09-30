@@ -205,7 +205,7 @@ def save_user_profile(sender, request, user, **kwargs):
             print("Email not found in extra_data")
 
         UserProfile.objects.update_or_create(
-            google_id=google_account.uid,
+            user=user,
             defaults={
                 'profile_image': profile_image,
                 'google_id': google_account.uid,
