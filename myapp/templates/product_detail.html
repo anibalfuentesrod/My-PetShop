@@ -1,62 +1,76 @@
 {% extends "base.html" %}
+{% load socialaccount %}
 
 {% block title %}Product Details{% endblock title %}
 
 {% block content %}
-
 <h2>{{ product.name }}</h2>
 <p><strong>Price:</strong> ${{ product.price }}</p>
 <p><strong>Description:</strong> {{ product.description }}</p>
-<p><strong>In Stock:</strong>{{ product.stock }}</p>
+<p><strong>Available:</strong> {{ product.available }}</p>
+<p><strong>Weight:</strong> {{ product.weight }} lbs</p>
 
-<!-- Mostrar imagen si existe -->
+<!-- Show image if it exists -->
 {% if product.image %}
     <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 200px; height: auto;">
 {% endif %}
 
-<!-- Botón de compra -->
+<!-- Show buttons based on user's login status -->
 {% if user.is_authenticated %}
-<button id="checkout-button" class="checkout-button" data-product-id="{{ product.id }}">
-    Buy
-</button>
+    <!-- Add to Cart Section -->
+    <form id="add-to-cart-form" method="POST" onsubmit="return false;">
+        <label for="quantity">Quantity:</label>
+        <input type="number" id="quantity" name="quantity" value="1" min="1">
+        <button type="submit">Add to Cart</button>
+    </form>
 {% else %}
-
-<button onclick="window.location.href='{% url "register" %}'">
-    <p>Tienes q tener cuenta para poder comprar</p>
-</button>
+    <!-- Redirect to Google login instead of registration -->
+    <button onclick="window.location.href='{% provider_login_url 'google' %}?next={% url 'product_detail' product.id %}'">
+        <p>You must log in via Google to add items to your cart</p>
+    </button>
 {% endif %}
 
-<!-- Stripe JS -->
-{% if user.is_authenticated %}
-<script src="https://js.stripe.com/v3/"></script>
+{% endblock content %}
+
+{% block extra_js %}
+<!-- Add to Cart functionality -->
+{% if user.is_authenticated and product.available %}
 <script type="text/javascript">
-    const stripe = Stripe('{{ STRIPE_PUBLISHABLE_KEY }}');
+    document.getElementById('add-to-cart-form').addEventListener('submit', function (e) {
+        e.preventDefault();  // Prevent default form submission behavior
+        console.log("Add to Cart button clicked.");  // Log when the button is clicked
 
-    document.getElementById('checkout-button').addEventListener('click', function () {
-        const productId = this.dataset.productId;
+        const productId = {{ product.id }};
+        const quantity = document.getElementById('quantity').value || 1;  // Get quantity, default to 1
 
-        fetch(`/create-checkout-session/${productId}/`, {
+        console.log("Product ID:", productId);  // Debugging log
+        console.log("Quantity:", quantity);  // Debugging log
+
+        fetch(`/cart/add/${productId}/`, {
             method: "POST",
             headers: {
                 "X-CSRFToken": "{{ csrf_token }}",
+                "Content-Type": "application/json"
             },
+            body: JSON.stringify({ quantity: quantity })  // Send quantity as part of the request
         })
         .then(function (response) {
+            console.log("Fetch response:", response);  // Debugging log for fetch response
             return response.json();
         })
-        .then(function (sessionId) {
-            return stripe.redirectToCheckout({ sessionId: sessionId.id });
-        })
-        .then(function (result) {
-            if (result.error) {
-                alert(result.error.message);
+        .then(function (data) {
+            console.log("Fetch data:", data);  // Log the response data
+
+            if (data.message) {
+                alert(data.message);  // Show success message
+            } else if (data.error) {
+                alert(data.error);  // Show error message if available
             }
         })
         .catch(function (error) {
-            console.error("Error:", error);
+            console.error("Error:", error);  // Log any error
         });
     });
 </script>
 {% endif %}
-
-{% endblock content %}
+{% endblock extra_js %}

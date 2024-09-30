@@ -4,16 +4,33 @@
 
 {% block content %}
 <h1>Products</h1>
+
+<!-- Category Filter Form -->
+<form method="get" action="{% url 'products' %}">
+    <label for="category-select">Select a Category:</label>
+    <select name="category" id="category-select" onchange="this.form.submit()">
+        <option value="">All Categories</option>
+        {% for category in categories %}
+        <option value="{{ category.id }}" {% if category.id == selected_category %}selected{% endif %}>
+            {{ category.name }}
+        </option>
+        {% endfor %}
+    </select>
+</form>
+
 <ul>
     {% for product in products %}
     <li>
-        <a href="{% url "product_detail" product.id %}">
+        <a href="{% url 'product_detail' product.id %}">
         <h2>{{ product.name }}</h2>
+        <p><strong>Price:</strong> ${{ product.price }}</p>
 
-        <p>{{ product.description }}</p>
-        <p>Price: ${{ product.price }}</p>
+        {% if product.category.name != 'Accessories' %}
+        <p><strong>Weight:</strong> {{ product.weight }} lbs</p>
+        {% endif %}
         </a>
-        <!-- mostrar imagen si existe -->
+
+        <!-- Show image if it exists -->
         {% if product.image %}
         <a href="{% url "product_detail" product.id %}">
             <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 200px; height: auto;">
@@ -24,6 +41,7 @@
         <li>No products available at the moment</li>
     {% endfor %}
 </ul>
+
 
 <!-- Stripe JS -->
 <script src="https://js.stripe.com/v3/"></script>
