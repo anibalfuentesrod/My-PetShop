@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Shipping Address{% endblock title %}
+
+{% block content %}
+<h2>Shipping Address</h2>
+<form method="POST" action="{% url 'shipping_address' %}">
+    {% csrf_token %}
+    <label for="direccion">Direccion:</label>
+    <input type="text" id="direccion" name="direccion" placeholder="e.g., Carretera 123" value="{{ form.direccion.value }}">
+    
+    <label for="ciudad">Ciudad:</label>
+    <input type="text" id="ciudad" name="ciudad" placeholder="e.g., San Juan" value="{{ form.ciudad.value }}">
+    
+    <label for="estado">Estado:</label>
+    <input type="text" id="estado" name="estado" placeholder="e.g., Puerto Rico" value="{{ form.estado.value }}">
+    
+    <label for="codigo_postal">Codigo Postal:</label>
+    <input type="text" id="codigo_postal" name="codigo_postal" placeholder="e.g., 00685" value="{{ form.codigo_postal.value }}">
+    
+    <label for="country">Country:</label>
+    <input type="text" id="country" name="country" placeholder="e.g., US (for the United States)" value="{{ form.country.value }}">
+
+    <button type="submit">Save Address</button>
+</form>
+{% endblock content %}
