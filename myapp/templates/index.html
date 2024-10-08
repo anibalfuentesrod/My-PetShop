@@ -1,12 +1,36 @@
-<!-- index = Pagina principal -->
 {% extends "base.html" %}
+{% load static %} 
 
 {% block title %}Home{% endblock title %}
 
-
 {% block content %}
-
 <h1>Welcome to our store!, {{ username }}</h1>
-<p>This is the main landing page.</p>
 
+<div class="best-sellers">
+    <h2>Our Top Sellers</h2>
+    <div class="product-grid">
+        <!-- Display up to 8 products -->
+        {% for product in products|slice:":8" %}
+        <div class="product-card">
+            <a href="{% url 'product_detail' product.id %}">
+                <!-- Product Image -->
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+                {% else %}
+                    <img src="{% static 'images/default-product.png' %}" alt="Default product image" class="product-image">
+                {% endif %}
+                
+                <!-- Product Info -->
+                <div class="product-info">
+                    <h3>{{ product.name }}</h3>
+                    <p class="price">${{ product.price|floatformat:2 }}</p>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+        {% if not products %}
+            <p>No products available at the moment.</p>
+        {% endif %}
+    </div>
+</div>
 {% endblock content %}

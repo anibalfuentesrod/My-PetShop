@@ -1,11 +1,44 @@
 {% extends 'base.html' %}
-
-{% block title %}Success Paymen!{% endblock title %}
+<!-- Load static files -->
+{% load static %}
+{% block title %}Payment Success{% endblock title %}
 
 {% block content %}
+<div class="success-container">
+    <!-- Checkmark Icon -->
+    <div class="checkmark">
+        <img src="{% static 'images/checkmark.png' %}" alt="Success" class="checkmark-icon">
+    </div>
 
-<h2>Compra Exitosa!!!</h2>
-<p>Tu pago a sido procesado correctamente</p>
+    <!-- Thank You Message -->
+    <h2>Thank you, {{ user.username }}!</h2>
+    <p>Your payment has been successfully processed, and your order is on its way!</p>
 
+    <!-- Order Details -->
+    <div class="order-details">
+        <h3>Order Summary</h3>
+        <ul>
+            <li><strong>Order Number:</strong> {{ order.id }}</li>
+            <li><strong>Order Date:</strong> {{ order.date | date:"F j, Y" }}</li>
+            <li><strong>Total Amount:</strong> ${{ order.total | floatformat:2 }}</li>
+        </ul>
 
+        <h3>Items Purchased:</h3>
+        <div class="items-grid">
+            {% for item in order.items.all %}
+            <div class="item-card">
+                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="item-image">
+                <div class="item-info">
+                    <h4>{{ item.product.name }}</h4>
+                    <p>Quantity: {{ item.quantity }}</p>
+                    <p>Price: ${{ item.product.price | floatformat:2 }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Footer Message -->
+    <p class="footer-message">If you have any questions about your order, feel free to reach out to our customer support.</p>
+</div>
 {% endblock content %}

@@ -10,6 +10,7 @@ from django.conf import settings
 from django.http import JsonResponse
 from django.dispatch import receiver
 from allauth.account.signals import user_logged_in
+from allauth.socialaccount.models import SocialAccount
 from .models import UserProfile
 from django.http import Http404
 import json
@@ -20,8 +21,10 @@ import json
 ############################################################################################
 def index(request):
     username = request.user
+    products = Product.objects.filter(available=True)  # Adjust as needed
     return render(request, 'index.html', {
-        'username': username
+        'products': products,
+        'username': request.user.username if request.user.is_authenticated else 'Guest',
     })
 ############################################################################################
 # Cerrar la Sesión
@@ -290,4 +293,22 @@ def shipping_address_view(request):
 
     return render(request, 'shipping_address.html', {
         'form': form
+    })
+############################################################################################
+# Funcion para foto de usuario NEW CODE
+############################################################################################
+@login_required
+def user_profile_view(request):
+    user = request.user
+    # Check if the user is associated with a Google account
+    social_account = SocialAccount.objects.filter(user=user, provider='google').first()
+    # Retrieve the profile picture URL if available
+    profile_picture_url = social_account.extra_data.get('picture') if social_account else None
+    
+    # Render the user profile template with the user data
+    return render(request, 'user_profile.html', {
+        'username': user.username,
+        'email': user.email,
+        'date_joined': user.date_joined,
+        'profile_picture_url': profile_picture_url,
     })
