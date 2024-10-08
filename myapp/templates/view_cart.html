@@ -1,42 +1,62 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}Cart{% endblock title %}
 
 {% block content %}
-<h2>Your Cart</h2>
+<div class="cart-container">
+    <h2>Your Cart</h2>
 
-<!-- Check if the cart has any items -->
-{% if cart_items %}
-<table>
-    <tr>
-        <th>Product</th>
-        <th>Price</th>
-        <th>Quantity</th>
-        <th>Total</th>
-        <th>Actions</th>
-    </tr>
-    {% for item in cart_items %}
-    <tr>
-        <td>{{ item.product.name }}</td>
-        <td>${{ item.product.price }}</td>
-        <td>{{ item.quantity }}</td>
-        <td>${{ item.product.price|floatformat:2 }}</td>
-        <td>
-            <a href="{% url 'remove_from_cart' item.id %}">Remove</a>
-        </td>
-    </tr>
-    {% endfor %}
-</table>
-<p>Total Price: ${{ total_price|floatformat:2 }}</p>
+    <!-- Check if the cart has any items -->
+    {% if cart_items %}
+    <table class="cart-table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart_items %}
+            <tr>
+                <td>
+                    <div class="cart-product">
+                        {% if item.product.image %}
+                        <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="cart-product-img">
+                        {% else %}
+                        <img src="{% static 'images/default-product.png' %}" alt="Default Product" class="cart-product-img">
+                        {% endif %}
+                        <span>{{ item.product.name }}</span>
+                    </div>
+                </td>
+                <td>${{ item.product.price|floatformat:2 }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>${{ item.product.price|floatformat:2 }}</td>
+                <td>
+                    <a href="{% url 'remove_from_cart' item.id %}" class="btn-remove">Remove</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="cart-summary">
+        <p><strong>Total Price:</strong> ${{ total_price|floatformat:2 }}</p>
 
-<!-- Check if the user has a shipping address -->
-{% if shipping_address %}
-    <p>Shipping to: {{ shipping_address.direccion }}, {{ shipping_address.ciudad }}, {{ shipping_address.estado }}, {{ shipping_address.country }}</p>
-    <!-- Checkout Button -->
-    <button id="checkout-button">Proceed to Checkout</button>
-{% else %}
-    <p>You need to <a href="{% url 'shipping_address' %}">add a shipping address</a> before proceeding to checkout.</p>
-{% endif %}
-
+        <!-- Check if the user has a shipping address -->
+        {% if shipping_address %}
+            <p><strong>Shipping to:</strong> {{ shipping_address.direccion }}, {{ shipping_address.ciudad }}, {{ shipping_address.estado }}, {{ shipping_address.country }}</p>
+            <!-- Checkout Button -->
+            <button id="checkout-button" class="btn-primary">Proceed to Checkout</button>
+        {% else %}
+            <p>You need to <a href="{% url 'shipping_address' %}">add a shipping address</a> before proceeding to checkout.</p>
+        {% endif %}
+    </div>
+    {% else %}
+    <p>Your cart is empty.</p>
+    {% endif %}
+</div>
 
 <!-- Stripe JS -->
 <script src="https://js.stripe.com/v3/"></script>
@@ -70,8 +90,4 @@
         });
     });
 </script>
-{% else %}
-<p>Your cart is empty.</p>
-{% endif %}
-
 {% endblock content %}

@@ -1,13 +1,24 @@
 {% extends "base.html" %}
+<!-- Load static files -->
+{% load static %}
 
-
-{% block titile %}Pago Cancelado!!{% endblock titile %}
+{% block title %}Pago Cancelado!!{% endblock title %}
 
 {% block content %}
-<h2>El pago a sido cancelado</h2>
-<p>parece q has cancelado el proceso de pago.</p>
-
-
-
-
+<div class="cancel-container">
+    <!-- Checkmark Icon for Cancelled Payment -->
+    <div class="cancel-icon">
+        <img src="{% static 'images/cancel-icon.png' %}" alt="Cancelled" class="icon-image">
+    </div>
+    
+    <!-- Message for the User -->
+    <h2 class="cancel-message">El pago ha sido cancelado</h2>
+    <p class="cancel-description">Parece que has cancelado el proceso de pago. Si esto fue un error, puedes intentarlo de nuevo.</p>
+    
+    <!-- Call to Action Buttons -->
+    <div class="cta-buttons">
+        <a href="{% url 'products' %}" class="btn-primary">Regresar a la tienda</a>
+        <a href="{% url 'view_cart' %}" class="btn-secondary">Regresar al carrito</a>
+    </div>
+</div>
 {% endblock content %}
