@@ -1,80 +1,42 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block title %}Available Products{% endblock title %}
 
 {% block content %}
 <h1>Products</h1>
 
 <!-- Category Filter Form -->
-<form method="get" action="{% url 'products' %}">
-    <label for="category-select">Select a Category:</label>
-    <select name="category" id="category-select" onchange="this.form.submit()">
-        <option value="">All Categories</option>
-        {% for category in categories %}
-        <option value="{{ category.id }}" {% if category.id == selected_category %}selected{% endif %}>
-            {{ category.name }}
-        </option>
-        {% endfor %}
-    </select>
+<form method="get" action="{% url 'products' %}" class="category-form">
+    <label for="category-select" class="category-label">Select a Category:</label>
+    <div class="select-wrapper">
+        <select name="category" id="category-select" class="styled-select" onchange="this.form.submit()">
+            <option value="">All Categories</option>
+            {% for category in categories %}
+            <option value="{{ category.id }}" {% if category.id == selected_category %}selected{% endif %}>
+                {{ category.name }}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
 </form>
 
-<ul>
+<ul class="product-list">
     {% for product in products %}
-    <li>
-        <a href="{% url 'product_detail' product.id %}">
-        <h2>{{ product.name }}</h2>
-        <p><strong>Price:</strong> ${{ product.price }}</p>
-
-        {% if product.category.name != 'Accessories' %}
-        <p><strong>Weight:</strong> {{ product.weight }} lbs</p>
-        {% endif %}
+    <li class="product-item">
+        <a href="{% url 'product_detail' product.id %}" class="product-link">
+            <h2>{{ product.name }}</h2>
+            <p><strong>Price:</strong> ${{ product.price }}</p>
+            {% if product.category.name != 'Accessories' %}
+                <p><strong>Weight:</strong> {{ product.weight }} lbs</p>
+            {% endif %}
+            <!-- Show image if it exists -->
+            {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+            {% endif %}
         </a>
-
-        <!-- Show image if it exists -->
-        {% if product.image %}
-        <a href="{% url "product_detail" product.id %}">
-            <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 200px; height: auto;">
-        </a>
-        {% endif %}
     </li>
     {% empty %}
         <li>No products available at the moment</li>
     {% endfor %}
 </ul>
-
-
-<!-- Stripe JS -->
-<script src="https://js.stripe.com/v3/"></script>
-<script type="text/javascript">
-    const stripe = Stripe('{{ STRIPE_PUBLISHABLE_KEY }}');
-
-    document.querySelectorAll('.checkout-button').forEach(button => {
-        button.addEventListener('click', function () {
-            const productId = this.dataset.productId;
-
-            fetch(`/create-checkout-session/${productId}/`, {
-                method: "POST",
-                headers: {
-                    "X-CSRFToken": "{{ csrf_token }}",
-                },
-            })
-            .then(function (response) {
-                return response.json();
-            })
-            .then(function (sessionId) {
-                return stripe.redirectToCheckout({ sessionId: sessionId.id });
-            })
-            .then(function (result) {
-                if (result.error) {
-                    alert(result.error.message);
-                }
-            })
-            .catch(function (error) {
-                console.error("Error:", error);
-            });
-        });
-    });
-</script>
-
-
 {% endblock content %}

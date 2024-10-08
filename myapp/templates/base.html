@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Everything your pet needs, all in one place.">
+    <link href="https://fonts.googleapis.com/css2?family=Cherry+Swash:wght@400;700&display=swap" rel="stylesheet">
     <title>{% block title %}My PetShop{% endblock title %}</title>
     <!-- Load static files -->
     {% load static %}
@@ -11,9 +12,18 @@
 
     <!-- Link to CSS -->
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <style>
+        body {
+            background-image: url("{% static 'images/background.png' %}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+    </style>
 </head>
 <body>
-    <!-- JINJA para incluir el navbar en todas las paginas -->
+    <!-- Navbar included on all pages -->
     {% include "navbar.html" %}
 
     <!-- Main header/banner -->
@@ -24,40 +34,93 @@
             </div>
         </div>
 
-        <!-- Muestra el mensaje (Welcome) solo en Homepage(pagina principal)-->
+        <!-- Show hero section only on the homepage ("/") -->
         {% if request.path == "/" %}
-        <div class="logo-section">
-            <div class="container">
-                    {% if user.is_authenticated %}
-                        <h1>Welcome! {{ username }} </h1>
-                    {% else %}
-                        <h1>Welcome!, Guest</h1>
-                    {% endif %}
+        <section class="hero-section">
+            <div class="hero-content">
+                <h2>Your Trusted Pet Haven</h2>
+                <p>Everything Your Pet Needs, All in One Place</p>
+                <a href="{% url 'products' %}" class="cta-button">Shop Now</a>
             </div>
-        </div>
+        </section>
         {% endif %}
     </header>
 
-    <!-- Aqui va el contenido de la pagina -->
+    <!-- Main content area -->
     <main class="content">
         {% block content %}
-        <!-- Aqui va el contenido de cada pagina -->
+        <!-- Dynamic content for each page goes here -->
         {% endblock content %}
     </main>
 
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <p>&copy; 2024 My Petshop - All rights reserved.</p>
-        </div>
-    </footer>
+   <!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-grid">
+            <!-- Quick Links -->
+            <div class="footer-column">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="{% url 'index' %}">Home</a></li>
+                    <li><a href="{% url 'products' %}">Shop</a></li>
+                    <li><a href="#">Gift Card</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
 
-    <!-- Link to Javascript FILES -->
+            <!-- Policies -->
+            <div class="footer-column">
+                <h4>Policies</h4>
+                <ul>
+                    <li><a href="#">Terms & Conditions</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Refund Policy</a></li>
+                    <li><a href="#">Shipping Policy</a></li>
+                </ul>
+            </div>
+
+            <!-- Contact Info -->
+            <div class="footer-column">
+                <h4>Contact Us</h4>
+                <p>Example Street Address<br>Aguadilla, PR 00605</p>
+                <p>Email: info@mysite.com</p>
+                <p>Phone: 123-456-7890</p>
+            </div>
+
+            <!-- Newsletter Subscription -->
+            <div class="footer-column">
+                <h4>Subscribe to our newsletter</h4>
+                <form method="POST" action="#">
+                    {% csrf_token %}
+                    <label>
+                        <input type="checkbox" name="subscribe" required>
+                        Yes, subscribe me to your newsletter.
+                    </label>
+                    <input type="email" name="email" placeholder="Email *" required>
+                    <button type="submit" class="btn-submit">Submit</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Social Media Links -->
+        <div class="social-media">
+            <a href="#" class="social-icon">TK</a>
+            <a href="#" class="social-icon">FB</a>
+            <a href="#" class="social-icon">IG</a>
+        </div>
+
+        <!-- Footer Copyright -->
+        <div class="footer-bottom">
+            <p>&copy; 2024 My PetShop Inc. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+    <!-- Link to JavaScript files -->
     <script src="{% static 'js/main.js' %}"></script>
     <!-- Block for extra JavaScript -->
     {% block extra_js %}
     <!-- JavaScript specific to individual pages will be inserted here -->
     {% endblock extra_js %}
-    
 </body>
 </html>
