@@ -1,15 +1,32 @@
-<!-- user_profile.html -->
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}User Profile{% endblock %}
 
 {% block content %}
-<h2>Hello, {{ username }}!!</h2>
+<div class="profile-container">
+    <h2 class="profile-heading">Hello, {{ username }}!!</h2>
+    
+    <!-- Display the profile picture -->
+    <div class="profile-picture">
+        {% if profile_picture_url %}
+            <img src="{{ profile_picture_url }}" alt="{{ username }}'s profile picture" class="profile-img">
+        {% else %}
+            <!-- Default image if no profile picture is available -->
+            <img src="{% static 'images/default-profile.png' %}" alt="Default profile picture" class="profile-img">
+        {% endif %}
+    </div>
 
-
-<p><strong>Username:</strong> {{ username }}</p>
-<p><strong>Email:</strong> {{ email }}</p>
-<p><strong>Member since:</strong> {{ date_joined|date:"F j, Y" }}</p>
-
-
+    <div class="profile-info">
+        <div class="info-item">
+            <strong>Username:</strong> <span>{{ username }}</span>
+        </div>
+        <div class="info-item">
+            <strong>Email:</strong> <span>{{ email }}</span>
+        </div>
+        <div class="info-item">
+            <strong>Member since:</strong> <span>{{ date_joined|date:"F j, Y" }}</span>
+        </div>
+    </div>
+</div>
 {% endblock %}

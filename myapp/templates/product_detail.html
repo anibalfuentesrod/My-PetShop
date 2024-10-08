@@ -4,32 +4,33 @@
 {% block title %}Product Details{% endblock title %}
 
 {% block content %}
-<h2>{{ product.name }}</h2>
-<p><strong>Price:</strong> ${{ product.price }}</p>
-<p><strong>Description:</strong> {{ product.description }}</p>
-<p><strong>Available:</strong> {{ product.available }}</p>
-<p><strong>Weight:</strong> {{ product.weight }} lbs</p>
+<div class="product-detail-container">
+    <h2>{{ product.name }}</h2>
+    <p><strong>Price:</strong> ${{ product.price }}</p>
+    <p><strong>Description:</strong> {{ product.description }}</p>
+    <p><strong>Available:</strong> {{ product.available }}</p>
+    <p><strong>Weight:</strong> {{ product.weight }} lbs</p>
 
-<!-- Show image if it exists -->
-{% if product.image %}
-    <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 200px; height: auto;">
-{% endif %}
+    <!-- Show image if it exists -->
+    {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-img">
+    {% endif %}
 
-<!-- Show buttons based on user's login status -->
-{% if user.is_authenticated %}
-    <!-- Add to Cart Section -->
-    <form id="add-to-cart-form" method="POST" onsubmit="return false;">
-        <label for="quantity">Quantity:</label>
-        <input type="number" id="quantity" name="quantity" value="1" min="1">
-        <button type="submit">Add to Cart</button>
-    </form>
-{% else %}
-    <!-- Redirect to Google login instead of registration -->
-    <button onclick="window.location.href='{% provider_login_url 'google' %}?next={% url 'product_detail' product.id %}'">
-        <p>You must log in via Google to add items to your cart</p>
-    </button>
-{% endif %}
-
+    <!-- Show buttons based on user's login status -->
+    {% if user.is_authenticated %}
+        <!-- Add to Cart Section -->
+        <form id="add-to-cart-form" method="POST" onsubmit="return false;">
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity" name="quantity" value="1" min="1">
+            <button type="submit">Add to Cart</button>
+        </form>
+    {% else %}
+        <!-- Redirect to Google login instead of registration -->
+        <button onclick="window.location.href='{% provider_login_url 'google' %}?next={% url 'product_detail' product.id %}'" class="btn-primary">
+            Log in via Google to Add to Cart
+        </button>
+    {% endif %}
+</div>
 {% endblock content %}
 
 {% block extra_js %}
