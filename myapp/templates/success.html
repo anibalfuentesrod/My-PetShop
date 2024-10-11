@@ -19,13 +19,13 @@
         <h3>Order Summary</h3>
         <ul>
             <li><strong>Order Number:</strong> {{ order.id }}</li>
-            <li><strong>Order Date:</strong> {{ order.date | date:"F j, Y" }}</li>
-            <li><strong>Total Amount:</strong> ${{ order.total | floatformat:2 }}</li>
+            <li><strong>Order Date:</strong> {{ order.created_at | date:"F j, Y, g:i a" }}</li>
+            <li><strong>Total Amount:</strong> ${{ order.total_price }}</li>
         </ul>
 
         <h3>Items Purchased:</h3>
         <div class="items-grid">
-            {% for item in order.items.all %}
+            {% for item in order.orderitem_set.all %}
             <div class="item-card">
                 <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="item-image">
                 <div class="item-info">
