@@ -5,11 +5,28 @@
     box-sizing: border-box;
 }
 
+/* General Styles */
 body {
     font-family: 'Arial', sans-serif;
-    line-height: 1.6;
-    background-color: #ffeb3b;
+    background-color: #fff176; /* Light yellow background */
+    color: #333;
+    cursor: url('/static/images/paw-cursor.png'), auto;
 }
+
+a {
+    cursor: url('/static/images/paw-select.png'), pointer;
+}
+
+/* Products Page Header */
+h1 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #e83535;
+    font-family: 'Cherry Swash', cursive;
+    text-shadow: 2px 2px 4px #000;
+}
+
 
 /* Main Header/Banner Styles */
 .main-header {
@@ -188,29 +205,6 @@ body {
         display: flex;
     }
 
-    .navbar-search {
-        width: calc(100% - 40px); /* Adjusts to fit within the navbar */
-        margin: 10px auto; /* Centers the search bar */
-    }
-
-    .search-input {
-        width: 100%; /* Full width on mobile */
-        border-radius: 20px 0 0 20px;
-    }
-
-    .search-button {
-        padding: 10px;
-        border-radius: 0 20px 20px 0;
-        background-color: #e83535;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    .search-button img {
-        width: 24px;
-        height: 24px;
-        filter: invert(1); /* Ensures icon remains white */
-    }
 }
 
 /* Background for the entire site */
@@ -404,28 +398,13 @@ body {
 }
 
 .footer input[type="email"] {
-    width: 100%;
-    padding: 8px;
-    margin: 10px 0;
+    width: 150px; /* Adjust to make it a reasonable width on desktop */
+    padding: 10px 15px;
+    margin: 0 10px; /* Add spacing between the email input and button */
     border-radius: 5px;
     border: 1px solid #ddd;
-}
-
-/* General Styles */
-body {
-    font-family: 'Arial', sans-serif;
-    background-color: #fff176; /* Light yellow background */
-    color: #333;
-}
-
-/* Products Page Header */
-h1 {
-    font-size: 2.5em;
-    margin-bottom: 20px;
-    text-align: center;
-    color: #e83535;
-    font-family: 'Cherry Swash', cursive;
-    text-shadow: 2px 2px 4px #000;
+    font-size: 1em; /* Ensure it's readable */
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Filter Form */
@@ -434,11 +413,11 @@ form {
     justify-content: center;
     align-items: center;
     margin-bottom: 20px;
+    gap: 10px;
 }
 
 form label {
     font-weight: bold;
-    margin-right: 10px;
     font-size: 1.1em;
 }
 
@@ -484,7 +463,6 @@ ul li h2 {
     font-size: 1.2em;
     margin-bottom: 10px;
     color: #e83535;
-    font-family: 'Cherry Swash', cursive;
     text-shadow: 1px 1px 2px #000;
 }
 
@@ -497,7 +475,6 @@ ul li p {
 ul li img {
     width: 100%;
     height: auto;
-    border-bottom: 2px solid #f44336;
 }
 
 /* Price and Weight Highlight */
@@ -518,7 +495,7 @@ ul li p strong {
     }
     
     ul {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
@@ -784,9 +761,9 @@ ul li p strong {
 .product-card {
     background-color: #fff;
     border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
     overflow: hidden;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .product-card:hover {
@@ -807,14 +784,61 @@ ul li p strong {
 
 .product-info h3 {
     font-size: 1.2em;
-    margin: 10px 0;
-    color: #333;
+    margin-bottom: 10px;
+    color: #e83535;
+    text-shadow: 1px 1px 2px #000;
 }
 
 .product-info .price {
     color: #e74c3c;
     font-weight: bold;
     font-size: 1.1em;
+}
+
+.product-card a {
+    text-decoration: none; /* Remove underline from links */
+    color: inherit; /* Inherit text color to keep consistency */
+}
+
+.product-card a:hover {
+    text-decoration: none; /* Prevent underline on hover */
+    color: #ffffff; /* Optional: Highlight color on hover */
+}
+
+@media (max-width: 768px) {
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 15px;  /* Adjust gap for better spacing */
+    padding: 10px;
+    margin-top: 20px;
+}
+
+}
+
+/* Responsive Adjustment for Mobile */
+@media (max-width: 768px) {
+    /* Ensures the table scrolls horizontally if needed */
+    .cart-container {
+        overflow-x: auto;
+    }
+
+    .cart-table {
+        width: 600px; /* Keep original layout by setting a min-width */
+    }
+
+    .cart-table th, 
+    .cart-table td {
+        font-size: 14px; /* Slightly smaller text for mobile */
+    }
+
+    /* Adjust the button layout for smaller screens */
+    .btn-remove {
+        display: block;
+        width: 100%;
+        margin-top: 5px;
+    }
 }
 
 /* Category Form Styles */
@@ -1011,7 +1035,7 @@ h2 {
 .btn-submit {
     background-color: #f44336;
     color: white;
-    padding: 12px 20px;
+    padding: 10px 20px;
     border: none;
     border-radius: 5px;
     font-size: 16px;
