@@ -163,8 +163,9 @@ class CreateCheckoutSessionView(View):
 ############################################################################################
 # Success Form si el pago fue exitoso
 ############################################################################################
-@login_required
 def success_view(request):
+    if not request.user.is_authenticated:
+        return redirect('account_login')
     cart = Cart.objects.get(user=request.user)
     cart_items = cart.cartitem_set.all()
 
