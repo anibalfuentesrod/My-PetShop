@@ -26,14 +26,6 @@
     <!-- Navbar included on all pages -->
     {% include "navbar.html" %}
 
-    <!-- Main header/banner -->
-    <header class="main-header">
-        <div class="header-top">
-            <div class="container">
-                <p>FREE DELIVERY OVER $40</p>
-            </div>
-        </div>
-
         <!-- Show hero section only on the homepage ("/") -->
         {% if request.path == "/" %}
         <section class="hero-section">
@@ -89,14 +81,14 @@
 
             <!-- Newsletter Subscription -->
             <div class="footer-column">
-                <h4>Subscribe to our newsletter</h4>
+                <h4>Fetch the Latest Deals and News! 🦴</h4>
                 <form method="POST" action="#">
                     {% csrf_token %}
                     <label>
                         <input type="checkbox" name="subscribe" required>
-                        Yes, subscribe me to your newsletter.
+                        Yes, subscribe me for deals and news! 🐶😺
                     </label>
-                    <input type="email" name="email" placeholder="Email *" required>
+                    <input type="email" name="email" placeholder="Enter your email" required>
                     <button type="submit" class="btn-submit">Submit</button>
                 </form>
             </div>
@@ -115,7 +107,6 @@
         </div>
     </div>
 </footer>
-
     <!-- Link to JavaScript files -->
     <script src="{% static 'js/main.js' %}"></script>
     <!-- Block for extra JavaScript -->
