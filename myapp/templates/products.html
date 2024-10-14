@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <h2>${product.name}</h2>
                         <p><strong>Price:</strong> $${product.price}</p>
                         ${product.category__name !== 'Accessories' ? `<p><strong>Weight:</strong> ${product.weight} lbs</p>` : ''}
-                        ${product.image__url ? `<img src="${product.image__url}" alt="${product.name}" class="product-image">` : ''}
+                        ${product.image ? `<img src="/media/${product.image}" alt="${product.name}" class="product-image">` : ''}
                     </a>
                 `;
                 productList.appendChild(li);
