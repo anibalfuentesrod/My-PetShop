@@ -1,6 +1,5 @@
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login as auth_login, logout
+from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from .models import Order, Product, Cart, CartItem, Category, ShippingAddress, OrderItem
 from .forms import ShippingAddressForm
@@ -53,7 +52,7 @@ def user_profile(request):
 ############################################################################################
 def products(request):
     categories = Category.objects.all()
-    
+    search_query = request.GET.get('search', '')
     category_id = request.GET.get('category', None)
     
     if category_id:
@@ -61,10 +60,18 @@ def products(request):
     else:
         products = Product.objects.all()
 
+    if search_query:
+        products = products.filter(name__icontains=search_query)
+
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        product_list = list(products.values('id', 'name', 'price', 'weight', 'image__url', 'category__name'))
+        return JsonResponse({'products': product_list})
+
     context = {
         'products': products,
         'categories': categories,
-        'selected_category': category_id
+        'selected_category': category_id,
+        'search_query': search_query,
     }
     return render(request, 'products.html', context)
 ############################################################################################
@@ -163,8 +170,9 @@ class CreateCheckoutSessionView(View):
 ############################################################################################
 # Success Form si el pago fue exitoso
 ############################################################################################
-@login_required
 def success_view(request):
+    if not request.user.is_authenticated:
+        return redirect('account_login')
     cart = Cart.objects.get(user=request.user)
     cart_items = cart.cartitem_set.all()
 
