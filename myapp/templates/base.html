@@ -55,8 +55,8 @@
                 <ul>
                     <li><a href="{% url 'index' %}">Home</a></li>
                     <li><a href="{% url 'products' %}">Shop</a></li>
-                    <li><a href="#">Gift Card</a></li>
-                    <li><a href="#">Contact</a></li>
+                    <li><a href="{% url 'view_cart' %}">Cart</a></li>
+                    <li><a href="{% url 'contact' %}">Contact</a></li>
                 </ul>
             </div>
 
@@ -64,10 +64,10 @@
             <div class="footer-column">
                 <h4>Policies</h4>
                 <ul>
-                    <li><a href="#">Terms & Conditions</a></li>
-                    <li><a href="#">Privacy Policy</a></li>
-                    <li><a href="#">Refund Policy</a></li>
-                    <li><a href="#">Shipping Policy</a></li>
+                    <li><a href="{% url 'terms' %}">Terms & Conditions</a></li>
+                    <li><a href="{% url 'privacy' %}">Privacy Policy</a></li>
+                    <li><a href="{% url 'refund' %}">Refund Policy</a></li>
+                    <li><a href="{% url 'shipping' %}">Shipping Policy</a></li>
                 </ul>
             </div>
 

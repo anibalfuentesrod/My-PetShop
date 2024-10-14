@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Terms and Conditions{% endblock title %}
+
+{% block content %}
+<section class="terms-section">
+    <h1>Terms and Conditions</h1>
+    <p>Welcome to My Petshop! By accessing and using our website, you agree to the following terms and conditions. Please read them carefully.</p>
+
+    <h2>1. General Information</h2>
+    <p>This website is operated by My Petshop. Throughout the site, the terms “we”, “us” and “our” refer to My Petshop. By visiting our site and/or purchasing something from us, you agree to be bound by these terms and conditions.</p>
+
+    <h2>2. Products and Services</h2>
+    <p>We offer a range of pet-related products and services. All products are subject to availability and we reserve the right to limit or cancel quantities.</p>
+
+    <h2>3. Pricing</h2>
+    <p>All prices are subject to change without notice. We make every effort to ensure the accuracy of pricing; however, errors may occur. If an error is discovered, we will contact you with the option to reconfirm or cancel your order.</p>
+
+    <h2>4. Orders and Payment</h2>
+    <p>All orders are subject to acceptance. We reserve the right to refuse service to anyone at any time. Payment must be made in full at the time of checkout.</p>
+
+    <h2>5. Returns and Refunds</h2>
+    <p>Please refer to our <a href="{% url 'refund' %}">Refund Policy</a> for information regarding returns and refunds.</p>
+
+    <h2>6. Shipping</h2>
+    <p>Shipping costs and delivery times may vary depending on the location. Please see our <a href="{% url 'shipping' %}">Shipping Policy</a> for more information.</p>
+
+    <h2>7. Privacy</h2>
+    <p>Your submission of personal information through the store is governed by our <a href="{% url 'privacy' %}">Privacy Policy</a>.</p>
+
+    <h2>8. Changes to Terms and Conditions</h2>
+    <p>We reserve the right to update, change or replace any part of these terms by posting updates to our website. It is your responsibility to check for changes periodically.</p>
+
+    <h2>9. Governing Law</h2>
+    <p>These terms and conditions are governed by the laws of Puerto Rico.</p>
+
+    <h2>10. Contact Information</h2>
+    <p>If you have any questions about these Terms and Conditions, please contact us at <a href="mailto:info@mysite.com">info@mysite.com</a>.</p>
+</section>
+{% endblock content %}
