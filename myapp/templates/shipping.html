@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Shipping Policy{% endblock title %}
+
+{% block content %}
+<section class="shipping-section">
+    <h1>Shipping Policy</h1>
+    <p>At My Petshop, we aim to deliver your furry friend's needs quickly and safely to your doorstep. Please read through our shipping policy below for more information.</p>
+
+    <h2>Processing Time</h2>
+    <ul>
+        <li>All orders are processed within 1-3 business days.</li>
+        <li>Orders are not shipped on weekends or holidays.</li>
+        <li>If there is a delay, we will notify you promptly via email.</li>
+    </ul>
+
+    <h2>Shipping Rates and Delivery Time</h2>
+    <table class="shipping-table">
+        <thead>
+            <tr>
+                <th>Shipping Method</th>
+                <th>Cost</th>
+                <th>Estimated Delivery Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Standard Shipping</td>
+                <td>$5.00</td>
+                <td>3-5 Business Days</td>
+            </tr>
+            <tr>
+                <td>Express Shipping</td>
+                <td>$15.00</td>
+                <td>1-2 Business Days</td>
+            </tr>
+            <tr>
+                <td>Free Shipping (Orders Over $50)</td>
+                <td>$0.00</td>
+                <td>3-5 Business Days</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Shipping Restrictions</h2>
+    <ul>
+        <li>We currently ship only within the United States.</li>
+        <li>We do not ship to PO Boxes or APO/FPO addresses.</li>
+    </ul>
+
+    <h2>Tracking Your Order</h2>
+    <p>Once your order has shipped, you will receive a tracking number via email to monitor the delivery status of your package.</p>
+
+    <h2>Need Help?</h2>
+    <p>If you have any questions regarding shipping, please contact us at <a href="mailto:support@mypetshop.com">support@mypetshop.com</a>.</p>
+</section>
+{% endblock content %}
