@@ -5,6 +5,14 @@
 {% block content %}
 <h1>Products</h1>
 
+<!-- Search Form -->
+<form id="search-form" method="get" class="category-form">
+    <label for="search-input" class="category-label">Search Products:</label>
+    <div class="select-wrapper">
+        <input type="text" id="search-input" name="search" placeholder="Search products..." class="styled-select" value="{{ search_query }}">
+    </div>
+</form>
+
 <!-- Category Filter Form -->
 <form method="get" action="{% url 'products' %}" class="category-form">
     <label for="category-select" class="category-label">Select a Category:</label>
@@ -20,7 +28,8 @@
     </div>
 </form>
 
-<ul class="product-list">
+<!-- Product List -->
+<ul id="product-list" class="product-list">
     {% for product in products %}
     <li class="product-item">
         <a href="{% url 'product_detail' product.id %}" class="product-link">
@@ -39,4 +48,50 @@
         <li>No products available at the moment</li>
     {% endfor %}
 </ul>
+
+<script>
+// JavaScript para realizar la búsqueda en tiempo real
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('search-input');
+    const productList = document.getElementById('product-list');
+    const categorySelect = document.getElementById('category-select');
+
+    // Agregar un listener al input de búsqueda
+    searchInput.addEventListener('input', function() {
+        const query = searchInput.value;
+        const category = categorySelect.value;
+        const url = '{% url "products" %}?search=' + encodeURIComponent(query) + '&category=' + encodeURIComponent(category);
+
+        // Hacer la solicitud AJAX
+        fetch(url, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'  // Indica que es una solicitud AJAX
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Limpiar la lista de productos
+            productList.innerHTML = '';
+
+            // Agregar los nuevos productos
+            data.products.forEach(product => {
+                const li = document.createElement('li');
+                li.classList.add('product-item');
+                li.innerHTML = `
+                    <a href="/products/${product.id}/" class="product-link">
+                        <h2>${product.name}</h2>
+                        <p><strong>Price:</strong> $${product.price}</p>
+                        ${product.category__name !== 'Accessories' ? `<p><strong>Weight:</strong> ${product.weight} lbs</p>` : ''}
+                        ${product.image__url ? `<img src="${product.image__url}" alt="${product.name}" class="product-image">` : ''}
+                    </a>
+                `;
+                productList.appendChild(li);
+            });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    });
+});
+</script>
 {% endblock content %}
