@@ -320,3 +320,22 @@ def user_profile_view(request):
         'date_joined': user.date_joined,
         'profile_picture_url': profile_picture_url,
     })
+
+############################################################################################
+# NEW CODE
+############################################################################################
+
+def contact(request):
+    return render(request, 'contact.html')
+
+def terms(request):
+    return render(request, 'terms.html')
+
+def privacy(request):
+    return render(request, 'privacy.html')
+
+def refund(request):
+    return render(request, 'refund.html')
+
+def shipping(request):
+    return render(request, 'shipping.html')
