@@ -64,7 +64,7 @@ def products(request):
         products = products.filter(name__icontains=search_query)
 
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        product_list = list(products.values('id', 'name', 'price', 'weight', 'image__url', 'category__name'))
+        product_list = list(products.values('id', 'name', 'price', 'weight', 'image', 'category__name'))
         return JsonResponse({'products': product_list})
 
     context = {
