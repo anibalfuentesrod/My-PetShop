@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from .models import Order, Product, Cart, CartItem, Category, ShippingAddress, OrderItem
@@ -13,6 +13,7 @@ from allauth.socialaccount.models import SocialAccount
 from .models import UserProfile
 from django.http import Http404
 import json
+from allauth.socialaccount.helpers import complete_social_login
 
 # Create your views here.
 ############################################################################################
@@ -172,19 +173,25 @@ class CreateCheckoutSessionView(View):
 ############################################################################################
 def success_view(request):
     if not request.user.is_authenticated:
-        return redirect('account_login')
-    cart = Cart.objects.get(user=request.user)
+        # Redirigir al flujo de autenticación de Google directamente
+        return redirect(reverse('socialaccount_login', kwargs={'provider': 'google'}))
+
+    try:
+        cart = Cart.objects.get(user=request.user)
+    except Cart.DoesNotExist:
+        return redirect('view_cart')
+
     cart_items = cart.cartitem_set.all()
 
-    # Create a new order
+    # Crear una nueva orden
     order = Order.objects.create(
         customer=request.user,
         shipping_address=ShippingAddress.objects.get(user=request.user),
-        total_price=cart.total_price(),  # Assuming this function exists in your cart model
-        is_paid=True,  # Mark order as paid
+        total_price=cart.total_price(),
+        is_paid=True,
     )
 
-    # Add cart items to the order
+    # Añadir los artículos del carrito a la orden
     for item in cart_items:
         OrderItem.objects.create(
             order=order,
@@ -193,7 +200,7 @@ def success_view(request):
             price=item.product.price
         )
 
-    # Clear the cart after order is placed
+    # Limpiar el carrito después de realizar el pedido
     cart.cartitem_set.all().delete()
 
     return render(request, 'success.html', {'order': order})
