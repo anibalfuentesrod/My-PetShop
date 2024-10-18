@@ -171,10 +171,8 @@ class CreateCheckoutSessionView(View):
 ############################################################################################
 # Success Form si el pago fue exitoso
 ############################################################################################
+@login_required
 def success_view(request):
-    if not request.user.is_authenticated:
-        # Redirigir al flujo de autenticación de Google directamente
-        return redirect(reverse('socialaccount_login', kwargs={'provider': 'google'}))
 
     try:
         cart = Cart.objects.get(user=request.user)

@@ -87,7 +87,7 @@ ROOT_URLCONF = 'mypetshop.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'myapp/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -168,7 +168,7 @@ AUTHENTICATION_BACKENDS = (
 )
 
 
-LOGIN_REDIRECT_URL = "/"
+LOGIN_REDIRECT_URL = "/success/"
 LOGOUT_REDIRECT_URL = "/"
 SESSION_COOKIE_AGE = 1209600
 SOCIALACCOUNT_LOGIN_ON_GET = True
