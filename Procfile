@@ -1,1 +1,1 @@
-web: gunicorn mypetshop.wsgi
+web: python3 manage.py collectstatic && gunicorn mypetshop.wsgi
