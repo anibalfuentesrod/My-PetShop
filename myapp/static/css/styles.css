@@ -231,7 +231,7 @@ h1 {
 
 /* Hero Section Styles */
 .hero-section {
-    background-image: url("{% static 'images/hero-bg.png' %}"); /* Background image for the hero */
+    /* background-image: url('/static/images/hero-bg.png'); */
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -1535,45 +1535,63 @@ textarea {
     }
 }
 
-
-
-
-
-
-
-
 /* login.html to see order */
 /* Estilo para el contenedor de la tarjeta */
-.card-container {
+
+
+/* Flexbox container to center the login card */
+.form-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 60vh;
+    height: 100vh;
+    background-image: url("{% static 'images/background.png' %}");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
-/* Estilo para la tarjeta */
+
 .card {
     background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    max-width: 400px;
-    width: 100%;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
+    width: 350px;
 }
 
-/* Estilo para el botón */
+.input-field {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+
 .btn-submit {
-    background-color: #ff4f41;
+    width: 100%;
+    padding: 12px;
+    background-color: #ff6961;
     color: white;
-    padding: 10px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 16px;
-    margin-top: 20px;
+    font-size: 1rem;
+    transition: background-color 0.3s;
 }
 
 .btn-submit:hover {
-    background-color: #FF6F61;
+    background-color: #e55353;
+}
+
+.card a {
+    color: #ff6961;
+    text-decoration: none;
+}
+
+.card a:hover {
+    text-decoration: underline;
 }
