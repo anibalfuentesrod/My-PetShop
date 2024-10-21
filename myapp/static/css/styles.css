@@ -231,7 +231,7 @@ h1 {
 
 /* Hero Section Styles */
 .hero-section {
-    background-image: url("{% static 'images/background.png' %} "); /* Background image for the hero */
+    background-image: url("{% static 'images/hero-bg.png' %}"); /* Background image for the hero */
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
