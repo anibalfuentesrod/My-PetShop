@@ -150,5 +150,6 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get('SOCIAL_AUTH_GOOGLE_OAUTH2_SEC
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_WHITELISTED_DOMAINS = ['gmail.com']
 SOCIAL_AUTH_GOOGLE_OAUTH2_WHITELISTED_EMAILS = ['anibalfuentesrodriguez@gmail.com']
+SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI = 'https://my-petshop-production.up.railway.app/accounts/google/login/callback/'
 
 CSRF_TRUSTED_ORIGINS = ['https://my-petshop-production.up.railway.app']
