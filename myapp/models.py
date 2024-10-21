@@ -12,7 +12,7 @@ from django.core.exceptions import ValidationError
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     profile_image = models.URLField(blank=True, null=True)
-    google_id = models.CharField(max_length=100, unique=True)
+    google_id = models.CharField(max_length=100, unique=True,  blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
     
     def __str__(self) -> str:

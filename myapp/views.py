@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404, reverse
-from django.contrib.auth import logout
+from django.contrib.auth import logout, login, authenticate
 from django.contrib.auth.decorators import login_required
-from .models import Order, Product, Cart, CartItem, Category, ShippingAddress, OrderItem
+from .models import Order, Product, Cart, CartItem, Category, ShippingAddress, OrderItem, UserProfile
 from .forms import ShippingAddressForm
 from django.views import View
 import stripe
@@ -10,10 +10,12 @@ from django.http import JsonResponse
 from django.dispatch import receiver
 from allauth.account.signals import user_logged_in
 from allauth.socialaccount.models import SocialAccount
-from .models import UserProfile
 from django.http import Http404
 import json
 from allauth.socialaccount.helpers import complete_social_login
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib import messages
+from .forms import CustomUserCreationForm
 
 # Create your views here.
 ############################################################################################
@@ -27,6 +29,39 @@ def index(request):
         'username': request.user.username if request.user.is_authenticated else 'Guest',
     })
 ############################################################################################
+# Register
+############################################################################################
+def register(request):
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('login')
+    else:
+        form = CustomUserCreationForm()
+    return render(request, 'register.html', {'form': form})
+############################################################################################
+# login
+############################################################################################
+def login_form(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                messages.success(request, f"Welcome back, {username}!")
+                return redirect('index')
+            else:
+                messages.error(request, 'Invalid username or password.')
+        else:
+            messages.error(request, 'Invalid username or password.')
+    else:
+        form = AuthenticationForm()
+    return render(request, 'login.html', {'form': form})
+############################################################################################
 # Cerrar la Sesión
 ############################################################################################
 def logout_form(request):
@@ -38,14 +73,12 @@ def logout_form(request):
 @login_required
 def user_profile(request):
     user = request.user
-    try:
-        user_profile = UserProfile.objects.get(user=user)
-    except UserProfile.DoesNotExist:
-        raise Http404("UserProfile does not exist for this user.")
+    # Try to get or create the user profile
+    user_profile, created = UserProfile.objects.get_or_create(user=user)
     
     return render(request, 'user_profile.html', {
         'username': user.username,
-        'email': user_profile.email,
+        'email': user.email,  # Fetch from user model directly
         'date_joined': user.date_joined,
     })
 ############################################################################################
@@ -344,3 +377,18 @@ def refund(request):
 
 def shipping(request):
     return render(request, 'shipping.html')
+
+
+
+
+# CREATES NEW PROFILE
+@receiver(user_logged_in)
+def save_user_profile(sender, request, user, **kwargs):
+    # Check if the user already has a profile, if not, create one
+    user_profile, created = UserProfile.objects.get_or_create(user=user)
+    
+    # Optionally update email or other fields
+    if request.user.email and not user_profile.email:
+        user_profile.email = request.user.email  # Keep the email updated
+
+    user_profile.save()

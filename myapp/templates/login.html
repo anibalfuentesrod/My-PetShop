@@ -1,14 +1,24 @@
-<!-- login.html form let's goooo-->
 {% extends "base.html" %}
 
 {% block title %}Login{% endblock title %}
 
-{% load socialaccount %}
-
 {% block content %}
-<h2>Login via Google</h2>
-<form action="" method="POST">
-    {% csrf_token %}
-    <a href="{% provider_login_url 'google' %}?next=/">Login</a>
-</form>
+<div class="form-container">
+    <div class="card">
+        <h2>Login</h2>
+        <form method="POST" class="form">
+            {% csrf_token %}
+            <div class="form-group">
+                <input type="text" name="username" placeholder="Username" class="input-field" required>
+            </div>
+            <div class="form-group">
+                <input type="password" name="password" placeholder="Password" class="input-field" required>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn-submit">Login</button>
+            </div>
+        </form>
+        <p>Don't have an account? <a href="{% url 'register' %}">Register here</a></p>
+    </div>
+</div>
 {% endblock content %}
