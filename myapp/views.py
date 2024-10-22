@@ -60,6 +60,7 @@ def login_form(request):
             messages.error(request, 'Invalid username or password.')
     else:
         form = AuthenticationForm()
+    
     return render(request, 'login.html', {'form': form})
 ############################################################################################
 # Cerrar la Sesión

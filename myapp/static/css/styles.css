@@ -1595,3 +1595,12 @@ textarea {
 .card a:hover {
     text-decoration: underline;
 }
+
+
+
+.error-list {
+    color: red;
+    font-weight: bold;
+    list-style: none;
+    padding: 0;
+}
