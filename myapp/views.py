@@ -87,7 +87,7 @@ def user_profile(request):
 ############################################################################################
 def products(request):
     categories = Category.objects.all()
-    search_query = request.GET.get('search', '')
+    search_query = request.GET.get('search', '').strip()
     category_id = request.GET.get('category', None)
     
     if category_id:
