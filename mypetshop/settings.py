@@ -157,3 +157,17 @@ CSRF_TRUSTED_ORIGINS = ['https://my-petshop-production.up.railway.app']
 
 # Redirects to login when you enter 'cart' unloggin
 LOGIN_URL = '/login/'  # Change this to your custom login page
+
+
+
+
+# Email Backend configuration for sending emails with Gmail
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True  # Utiliza TLS para asegurar la conexión
+EMAIL_HOST = 'smtp.gmail.com'  # Servidor de Gmail para enviar correos
+EMAIL_PORT = 587  # Puerto SMTP para enviar correos electrónicos (TLS)
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')  # Tu correo electrónico de Gmail
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')  # La contraseña o App Password de tu cuenta Gmail
+
+# Remitente por defecto en los correos electrónicos
+DEFAULT_FROM_EMAIL = "My Petshop"
