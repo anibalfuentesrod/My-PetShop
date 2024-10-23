@@ -55,34 +55,36 @@ def login_form(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                
-                # Send welcome email
-                subject = 'Welcome to My-PetShop!'
-                
-                # Create the link for the products page
-                product_link = request.build_absolute_uri(reverse('products'))
-                
-                # Create an HTML message with the clickable link
-                message = f"""
-                <p>Hello {user.username},</p>
-                <p>Welcome to My-PetShop! We are excited to have you on board.</p>
-                <p>You can start exploring our products here: 
-                <a href="{product_link}">Products</a>.</p>
-                <p>Best regards,<br>My-PetShop Team</p>
-                """
-                
-                recipient_list = [user.email]
-                
-                send_mail(
-                    subject,
-                    '',  # Leave the plain message empty since we're sending an HTML message
-                    settings.DEFAULT_FROM_EMAIL,
-                    recipient_list,
-                    fail_silently=False,
-                    html_message=message  # Send HTML message
-                )
-                
                 messages.success(request, f"Welcome back, {username}!")
+
+                # Send welcome email (wrapped in try-except)
+                try:
+                    subject = 'Welcome to My-PetShop!'
+                    
+                    # Create the link for the products page
+                    product_link = request.build_absolute_uri(reverse('products'))
+                    
+                    # Create an HTML message with the clickable link
+                    message = f"""
+                    <p>Hello {user.username},</p>
+                    <p>Welcome to My-PetShop! We are excited to have you on board.</p>
+                    <p>Best regards,<br>My-PetShop Team</p>
+                    """
+                    
+                    recipient_list = [user.email]
+                    
+                    send_mail(
+                        subject,
+                        '',  # Leave the plain message empty since we're sending an HTML message
+                        settings.DEFAULT_FROM_EMAIL,
+                        recipient_list,
+                        fail_silently=False,
+                        html_message=message  # Send HTML message
+                    )
+                except Exception as e:
+                    # Log the email error but continue with the login
+                    print(f"Failed to send welcome email: {e}")
+
                 return redirect('index')
             else:
                 messages.error(request, 'Invalid username or password.')
