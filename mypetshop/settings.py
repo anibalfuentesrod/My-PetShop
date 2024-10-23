@@ -153,3 +153,7 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_WHITELISTED_EMAILS = ['anibalfuentesrodriguez@gmail.co
 SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI = 'https://my-petshop-production.up.railway.app/accounts/google/login/callback/'
 
 CSRF_TRUSTED_ORIGINS = ['https://my-petshop-production.up.railway.app']
+
+
+# Redirects to login when you enter 'cart' unloggin
+LOGIN_URL = '/login/'  # Change this to your custom login page
