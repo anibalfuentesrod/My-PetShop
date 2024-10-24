@@ -8,7 +8,13 @@
     <h2>{{ product.name }}</h2>
     <p><strong>Price:</strong> ${{ product.price }}</p>
     <p><strong>Description:</strong> {{ product.description }}</p>
-    <p><strong>Available:</strong> {% if product.available %}Yes{% else %}No{% endif %}</p>
+    <p><strong>Available:</strong> 
+        {% if product.available %}
+            <span style="color: green;">Yes</span>
+        {% else %}
+            <span style="color: red;">No</span>
+        {% endif %}
+    </p>
     <p><strong>Weight:</strong> {{ product.weight }} lbs</p>
 
     <!-- Show image if it exists -->
