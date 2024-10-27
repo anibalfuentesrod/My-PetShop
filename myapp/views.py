@@ -19,6 +19,8 @@ from .forms import CustomUserCreationForm
 from django.core.mail import send_mail
 from django.dispatch import receiver
 from django.urls import reverse
+from django.template.loader import render_to_string
+
 
 # Home Page
 def index(request):
@@ -55,25 +57,25 @@ def login_form(request):
 
                 try:
                     subject = 'Welcome to My-PetShop!'
-
-
+                    
+                    # Generate product link
                     product_link = request.build_absolute_uri(reverse('products'))
-
-                    message = f"""
-                    <p>Hello {user.username},</p>
-                    <p>Welcome to My-PetShop! We are excited to have you on board.</p>
-                    <p>Best regards,<br>My-PetShop Team</p>
-                    """
+                    
+                    # Render the HTML email template
+                    html_message = render_to_string('email.html', {
+                        'username': user.username,
+                        'product_link': product_link,
+                    })
 
                     recipient_list = [user.email]
-
+                    
                     send_mail(
                         subject,
-                        '',
+                        '',  # Leave the plain text version empty
                         settings.DEFAULT_FROM_EMAIL,
                         recipient_list,
                         fail_silently=False,
-                        html_message=message
+                        html_message=html_message  # Pass the rendered HTML message
                     )
                 except Exception as e:
                     print(f"Failed to send welcome email: {e}")
