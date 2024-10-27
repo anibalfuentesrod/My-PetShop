@@ -27,7 +27,6 @@
         </select>
     </div>
 </form>
-
 <!-- Product List -->
 <ul id="product-list" class="product-list">
     {% for product in products %}
@@ -50,39 +49,37 @@
 </ul>
 
 <script>
-// JavaScript para realizar la búsqueda en tiempo real
+// JavaScript to handle real-time search with space trimming
 document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('search-input');
     const productList = document.getElementById('product-list');
     const categorySelect = document.getElementById('category-select');
 
-    // Agregar un listener al input de búsqueda
     searchInput.addEventListener('input', function() {
-        const query = searchInput.value;
+        const query = searchInput.value.trim();  // Usamos trim para eliminar espacios
         const category = categorySelect.value;
         const url = '{% url "products" %}?search=' + encodeURIComponent(query) + '&category=' + encodeURIComponent(category);
 
-        // Hacer la solicitud AJAX
         fetch(url, {
             headers: {
-                'X-Requested-With': 'XMLHttpRequest'  // Indica que es una solicitud AJAX
+                'X-Requested-With': 'XMLHttpRequest'
             }
         })
         .then(response => response.json())
         .then(data => {
-            // Limpiar la lista de productos
             productList.innerHTML = '';
 
-            // Agregar los nuevos productos
             data.products.forEach(product => {
                 const li = document.createElement('li');
                 li.classList.add('product-item');
+
+                const imageUrl = product.image ? `https://${AWS_S3_CUSTOM_DOMAIN}/media/${product.image}` : ''; // Aseguramos que use el dominio de S3
                 li.innerHTML = `
                     <a href="/products/${product.id}/" class="product-link">
                         <h2>${product.name}</h2>
                         <p><strong>Price:</strong> $${product.price}</p>
                         ${product.category__name !== 'Accessories' ? `<p><strong>Weight:</strong> ${product.weight} lbs</p>` : ''}
-                        ${product.image ? `<img src="/media/${product.image}" alt="${product.name}" class="product-image">` : ''}
+                        ${imageUrl ? `<img src="${imageUrl}" alt="${product.name}" class="product-image">` : ''}
                     </a>
                 `;
                 productList.appendChild(li);

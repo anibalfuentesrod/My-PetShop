@@ -1,23 +1,47 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
 {% block title %}Login{% endblock title %}
 
 {% block content %}
 <div class="form-container">
     <div class="card">
-        <h2>Login</h2>
+        <h2 class="form-title">Login</h2>
+
         <form method="POST" class="form">
             {% csrf_token %}
-            <div class="form-group">
-                <input type="text" name="username" placeholder="Username" class="input-field" required>
-            </div>
-            <div class="form-group">
-                <input type="password" name="password" placeholder="Password" class="input-field" required>
-            </div>
-            <div class="form-group">
-                <button type="submit" class="btn-submit">Login</button>
-            </div>
+            
+            <!-- Campo de Username -->
+            {{ form.username.label_tag }}
+            {{ form.username }}
+            <!-- Mostrar el error directamente debajo del campo de username -->
+            {% if form.username.errors %}
+                <div class="error-message">
+                    {{ form.username.errors.0 }}
+                </div>
+            {% endif %}
+            
+            <!-- Campo de Password -->
+            {{ form.password.label_tag }}
+            {{ form.password }}
+            <!-- Mostrar el error directamente debajo del campo de password -->
+            {% if form.password.errors %}
+                <div class="error-message">
+                    {{ form.password.errors.0 }}
+                </div>
+            {% endif %}
+
+            <!-- Mostrar errores generales (no relacionados con campos) -->
+            {% if form.non_field_errors %}
+                <div class="error-message">
+                    {% for error in form.non_field_errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <button type="submit" class="btn-submit">Login</button>
         </form>
+
         <p>Don't have an account? <a href="{% url 'register' %}">Register here</a></p>
     </div>
 </div>

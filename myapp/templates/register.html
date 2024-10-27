@@ -9,13 +9,17 @@
             {% csrf_token %}
             <!-- Mostrar errores del formulario -->
             {% for field in form %}
-                <div class="form-group">
+                <div class="form-group" style="margin-bottom: 15px;">
                     {{ field.label_tag }}
                     {{ field }}
+                    <!-- Mantener los estilos consistentes para los errores -->
                     {% if field.errors %}
-                        <div class="error" style="color: red;">
+                        <div class="error" style="color: red; font-size: 14px; padding-top: 5px;">
                             {{ field.errors }}
                         </div>
+                    {% else %}
+                        <!-- Asegúrate de que haya un espacio para mantener la consistencia -->
+                        <div style="height: 18px;"></div>
                     {% endif %}
                 </div>
             {% endfor %}

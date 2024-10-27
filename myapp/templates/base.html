@@ -21,6 +21,25 @@
             background-attachment: fixed;
         }
     </style>
+    <style>
+        .hero-section {
+            background-image: url("{% static 'images/hero-bg.png' %}"); /* Background image for the hero /
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            padding: 50px 20px; / Adjusted padding for better responsiveness /
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); / Subtle shadow for depth /
+            border-radius: 8px; / Rounded corners */
+        }
+        </style>
 </head>
 <body>
     <!-- Navbar included on all pages -->
@@ -99,6 +118,8 @@
             <a href="#" class="social-icon">TK</a>
             <a href="#" class="social-icon">FB</a>
             <a href="#" class="social-icon">IG</a>
+
+            {% comment %} <a href="{% provider_login_url 'google' %}" class="social-icon">Login with Google</a> <!-- Google link - {% endcomment %}
         </div>
 
         <!-- Footer Copyright -->

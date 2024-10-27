@@ -16,21 +16,20 @@ from allauth.socialaccount.helpers import complete_social_login
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib import messages
 from .forms import CustomUserCreationForm
+from django.core.mail import send_mail
+from django.dispatch import receiver
+from django.urls import reverse
 
-# Create your views here.
-############################################################################################
-# HOME Page
-############################################################################################
+# Home Page
 def index(request):
     username = request.user
-    products = Product.objects.filter(available=True)  # Adjust as needed
+    products = Product.objects.filter(available=True)
     return render(request, 'index.html', {
         'products': products,
         'username': request.user.username if request.user.is_authenticated else 'Guest',
     })
-############################################################################################
+
 # Register
-############################################################################################
 def register(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
@@ -40,9 +39,8 @@ def register(request):
     else:
         form = CustomUserCreationForm()
     return render(request, 'register.html', {'form': form})
-############################################################################################
-# login
-############################################################################################
+
+# Login
 def login_form(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
@@ -53,6 +51,33 @@ def login_form(request):
             if user is not None:
                 login(request, user)
                 messages.success(request, f"Welcome back, {username}!")
+
+
+                try:
+                    subject = 'Welcome to My-PetShop!'
+
+
+                    product_link = request.build_absolute_uri(reverse('products'))
+
+                    message = f"""
+                    <p>Hello {user.username},</p>
+                    <p>Welcome to My-PetShop! We are excited to have you on board.</p>
+                    <p>Best regards,<br>My-PetShop Team</p>
+                    """
+
+                    recipient_list = [user.email]
+
+                    send_mail(
+                        subject,
+                        '',
+                        settings.DEFAULT_FROM_EMAIL,
+                        recipient_list,
+                        fail_silently=False,
+                        html_message=message
+                    )
+                except Exception as e:
+                    print(f"Failed to send welcome email: {e}")
+
                 return redirect('index')
             else:
                 messages.error(request, 'Invalid username or password.')
@@ -60,33 +85,30 @@ def login_form(request):
             messages.error(request, 'Invalid username or password.')
     else:
         form = AuthenticationForm()
+
     return render(request, 'login.html', {'form': form})
-############################################################################################
-# Cerrar la Sesión
-############################################################################################
+
+# Login
 def logout_form(request):
     logout(request)
     return redirect('index')
-############################################################################################
-# Vista Protegida: Dashboard del Usuario
-############################################################################################
+
+# User Profile
 @login_required
 def user_profile(request):
     user = request.user
-    # Try to get or create the user profile
     user_profile, created = UserProfile.objects.get_or_create(user=user)
-    
     return render(request, 'user_profile.html', {
         'username': user.username,
-        'email': user.email,  # Fetch from user model directly
+        'email': user.email,
         'date_joined': user.date_joined,
     })
-############################################################################################
-# Todos los productos
-############################################################################################
+
+
+# Product Listing
 def products(request):
     categories = Category.objects.all()
-    search_query = request.GET.get('search', '')
+    search_query = request.GET.get('search', '').strip()
     category_id = request.GET.get('category', None)
     
     if category_id:
@@ -108,17 +130,16 @@ def products(request):
         'search_query': search_query,
     }
     return render(request, 'products.html', context)
-############################################################################################
-# Los detalles de los productos
-############################################################################################
+
+# Product Details
 def product_detail(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     return render(request, 'product_detail.html', {
         'product': product,
     })
-############################################################################################
-# Checkout Session Let's goo
-############################################################################################
+
+
+# Checkout Session
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 class CreateCheckoutSessionView(View):
@@ -127,7 +148,7 @@ class CreateCheckoutSessionView(View):
         try:
             shipping_address = ShippingAddress.objects.get(user=request.user)
         except ShippingAddress.DoesNotExist:
-            return redirect('shipping_address')  # Redirect to shipping address form
+            return redirect('shipping_address')
 
         # Check if it's a single product or cart checkout
         product_id = kwargs.get('pk')
@@ -149,21 +170,21 @@ class CreateCheckoutSessionView(View):
                 } for item in cart_items
             ]
 
-        # Prepare shipping options (You can add more options here as needed)
+        # Prepare shipping options (Cambia aqui el shipping cuanto cuesta y días)
         shipping_options = [{
             'shipping_rate_data': {
                 'type': 'fixed_amount',
                 'fixed_amount': {'amount': 500, 'currency': 'usd'},
                 'display_name': 'Standard shipping',
                 'delivery_estimate': {
-                    'minimum': {'unit': 'business_day', 'value': 5},
-                    'maximum': {'unit': 'business_day', 'value': 7},
+                    'minimum': {'unit': 'business_day', 'value': 14},
+                    'maximum': {'unit': 'business_day', 'value': 16},
                 },
             }
         }]
 
-        # Allow a variety of countries, including the user's selected country
-        allowed_countries = ['US', 'PR', 'CA', 'GB', 'MX', 'AU']  # Add other Stripe-supported countries
+
+        allowed_countries = ['US', 'PR', 'CA', 'GB', 'MX', 'AU']
         user_country = shipping_address.country
 
         # Ensure that the user's country is included in allowed countries
@@ -201,9 +222,8 @@ class CreateCheckoutSessionView(View):
             # Log the error
             print(f"Stripe Checkout Session Error: {str(e)}")
             return JsonResponse({'error': str(e)}, status=400)
-############################################################################################
-# Success Form si el pago fue exitoso
-############################################################################################
+
+# Succes Page
 @login_required
 def success_view(request):
 
@@ -235,14 +255,13 @@ def success_view(request):
     cart.cartitem_set.all().delete()
 
     return render(request, 'success.html', {'order': order})
-############################################################################################
-# Cancel form si quieres cancelar el pago
-############################################################################################
+
+# Cancel Page
 def cancel_view(request):
     return render(request, 'cancel.html')
-############################################################################################
-# 
-############################################################################################
+
+
+# Signal to Save User Profile
 @receiver(user_logged_in)
 def save_user_profile(sender, request, user, **kwargs):
     google_account = user.socialaccount_set.filter(provider='google').first()
@@ -261,9 +280,8 @@ def save_user_profile(sender, request, user, **kwargs):
                 'email': email,
             }
         )
-############################################################################################
-# When user adds item to cart
-############################################################################################
+
+# Add to cart
 @login_required
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
@@ -288,9 +306,9 @@ def add_to_cart(request, product_id):
 
         return JsonResponse({"message": f"{quantity} item(s) added to cart successfully."})
     return JsonResponse({"error": "Invalid request method."}, status=400)
-############################################################################################
-# This view displays the user's cart, including all items and the total price
-############################################################################################
+
+
+# View Cart
 @login_required
 def view_cart(request):
     cart, created = Cart.objects.get_or_create(user=request.user)
@@ -309,17 +327,16 @@ def view_cart(request):
     }
 
     return render(request, 'view_cart.html', context)
-############################################################################################
-# remove item from cart view
-############################################################################################
+
+# Remove from cart product
 def remove_from_cart(request, item_id):
     cart_item = get_object_or_404(CartItem, id=item_id, cart__user=request.user)
     cart_item.delete()
 
     return redirect('view_cart')
-############################################################################################
-# Funcion para añadir o editar el shipping address
-############################################################################################
+
+
+# Shipping view 
 @login_required
 def shipping_address_view(request):
     try:
@@ -340,28 +357,18 @@ def shipping_address_view(request):
     return render(request, 'shipping_address.html', {
         'form': form
     })
-############################################################################################
-# Funcion para foto de usuario NEW CODE
-############################################################################################
-@login_required
-def user_profile_view(request):
-    user = request.user
-    # Check if the user is associated with a Google account
-    social_account = SocialAccount.objects.filter(user=user, provider='google').first()
-    # Retrieve the profile picture URL if available
-    profile_picture_url = social_account.extra_data.get('picture') if social_account else None
-    
-    # Render the user profile template with the user data
-    return render(request, 'user_profile.html', {
-        'username': user.username,
-        'email': user.email,
-        'date_joined': user.date_joined,
-        'profile_picture_url': profile_picture_url,
-    })
 
-############################################################################################
-# NEW CODE
-############################################################################################
+# CREATES NEW PROFILE
+@receiver(user_logged_in)
+def save_user_profile(sender, request, user, **kwargs):
+    # Check if the user already has a profile, if not, create one
+    user_profile, created = UserProfile.objects.get_or_create(user=user)
+    
+    # Optionally update email or other fields
+    if request.user.email and not user_profile.email:
+        user_profile.email = request.user.email  # Keep the email updated
+
+    user_profile.save()
 
 def contact(request):
     return render(request, 'contact.html')
@@ -377,18 +384,3 @@ def refund(request):
 
 def shipping(request):
     return render(request, 'shipping.html')
-
-
-
-
-# CREATES NEW PROFILE
-@receiver(user_logged_in)
-def save_user_profile(sender, request, user, **kwargs):
-    # Check if the user already has a profile, if not, create one
-    user_profile, created = UserProfile.objects.get_or_create(user=user)
-    
-    # Optionally update email or other fields
-    if request.user.email and not user_profile.email:
-        user_profile.email = request.user.email  # Keep the email updated
-
-    user_profile.save()
