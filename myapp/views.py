@@ -189,8 +189,8 @@ class CreateCheckoutSessionView(View):
                 'fixed_amount': {'amount': 500, 'currency': 'usd'},
                 'display_name': 'Standard shipping',
                 'delivery_estimate': {
-                    'minimum': {'unit': 'business_day', 'value': 5},
-                    'maximum': {'unit': 'business_day', 'value': 7},
+                    'minimum': {'unit': 'business_day', 'value': 14},
+                    'maximum': {'unit': 'business_day', 'value': 16},
                 },
             }
         }]
