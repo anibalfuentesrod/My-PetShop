@@ -24,4 +24,5 @@ urlpatterns = [
     path('privacy/', views.privacy, name='privacy'),
     path('refund/', views.refund, name='refund'),
     path('shipping/', views.shipping, name='shipping'),
+    path('landing-page/', views.landing, name='landing')
 ]
