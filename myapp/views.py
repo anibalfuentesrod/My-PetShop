@@ -386,3 +386,7 @@ def refund(request):
 
 def shipping(request):
     return render(request, 'shipping.html')
+
+
+def landing(request):
+    return render(request, 'landing_page.html')
