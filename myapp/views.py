@@ -54,6 +54,8 @@ def login_form(request):
                 login(request, user)
                 messages.success(request, f"Welcome back, {username}!")
 
+                # Convert user's email to lowercase
+                email = user.email.lower()
 
                 try:
                     subject = 'Welcome to My-PetShop!'
@@ -67,8 +69,8 @@ def login_form(request):
                         'product_link': product_link,
                     })
 
-                    recipient_list = [user.email]
-                    
+                    recipient_list = [email]  # Use the lowercased email
+
                     send_mail(
                         subject,
                         '',  # Leave the plain text version empty
@@ -90,7 +92,7 @@ def login_form(request):
 
     return render(request, 'login.html', {'form': form})
 
-# Login
+# Logout
 def logout_form(request):
     logout(request)
     return redirect('index')
