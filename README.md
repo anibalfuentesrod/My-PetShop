@@ -40,13 +40,13 @@ My-PetShop is an online platform where users can browse and purchase pet product
 ## Screenshots
 
 ### Home Page
-![Home Page](static/images/screenshots/home_page.png)
+![Home Page](myapp/static/images/screenshots/home_page.png)
 
 ### Product Listing
-![Product Listing](static/images/screenshots/product_listing.png)
+![Product Listing](myapp/static/images/screenshots/product_listing.png)
 
 ### User Profile
-![User Profile](static/images/screenshots/user_profile.png)
+![User Profile](myapp/static/images/screenshots/user_profile.png)
 
 ## Contact
 
