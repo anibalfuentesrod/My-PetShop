@@ -30,6 +30,12 @@
         <div class="shipping-button-container">
             <a href="{% url 'shipping_address' %}" class="btn-update-shipping">Update Shipping Address</a>
         </div>
+        <div class="delete-account-container">
+            <form method="post" action="{% url 'delete_account' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn-delete-account">Delete Account</button>
+            </form>
+        </div>
     </div>
 </div>
 {% endblock %}

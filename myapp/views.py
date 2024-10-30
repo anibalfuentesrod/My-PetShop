@@ -369,6 +369,17 @@ def save_user_profile(sender, request, user, **kwargs):
 
     user_profile.save()
 
+
+# Delete Profile
+@login_required
+def delete_account(request):
+    user = request.user
+    if request.method == 'POST':
+        user.delete()
+        messages.success(request, 'Your account has been deleted successfully.')
+        return redirect('index')
+    return render(request, 'delete_account.html')
+
 def contact(request):
     return render(request, 'contact.html')
 
