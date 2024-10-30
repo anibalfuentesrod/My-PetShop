@@ -13,27 +13,27 @@
         <div class="form-grid">
             <div class="form-group full-width">
                 <label for="direccion">Direccion:</label>
-                <input type="text" id="direccion" name="direccion" placeholder="e.g., Carretera 123" value="{{ form.direccion.value }}">
+                <input type="text" id="direccion" name="direccion" placeholder="e.g., Carretera 123" value="{{ form.direccion.value|default_if_none:'' }}">
             </div>
-
+            
             <div class="form-group">
                 <label for="ciudad">Ciudad:</label>
-                <input type="text" id="ciudad" name="ciudad" placeholder="e.g., San Juan" value="{{ form.ciudad.value }}">
+                <input type="text" id="ciudad" name="ciudad" placeholder="e.g., San Juan" value="{{ form.ciudad.value|default_if_none:'' }}">
             </div>
-
+            
             <div class="form-group">
                 <label for="estado">Estado:</label>
-                <input type="text" id="estado" name="estado" placeholder="e.g., Puerto Rico" value="{{ form.estado.value }}">
+                <input type="text" id="estado" name="estado" placeholder="e.g., Puerto Rico" value="{{ form.estado.value|default_if_none:'' }}">
             </div>
-
+            
             <div class="form-group">
                 <label for="codigo_postal">Codigo Postal:</label>
-                <input type="text" id="codigo_postal" name="codigo_postal" placeholder="e.g., 00685" value="{{ form.codigo_postal.value }}">
+                <input type="text" id="codigo_postal" name="codigo_postal" placeholder="e.g., 00685" value="{{ form.codigo_postal.value|default_if_none:'' }}">
             </div>
-
+            
             <div class="form-group">
                 <label for="country">Country:</label>
-                <input type="text" id="country" name="country" placeholder="e.g., US" value="{{ form.country.value }}">
+                <input type="text" id="country" name="country" placeholder="e.g., US" value="{{ form.country.value|default_if_none:'' }}">
             </div>
         </div>
         <button type="submit" class="btn-submit">Save Address</button>
