@@ -20,6 +20,7 @@ from django.core.mail import send_mail
 from django.dispatch import receiver
 from django.urls import reverse
 from django.template.loader import render_to_string
+from django.contrib.auth.models import User
 
 
 # Home Page
@@ -43,39 +44,35 @@ def register(request):
     return render(request, 'register.html', {'form': form})
 
 # Login
+# Login
 def login_form(request):
     if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(request, username=username, password=password)
+        email = request.POST['email']
+        password = request.POST['password']
+        
+        try:
+            user = User.objects.get(email=email)
+            user = authenticate(request, username=user.username, password=password)
             if user is not None:
                 login(request, user)
-                messages.success(request, f"Welcome back, {username}!")
 
-                # Convert user's email to lowercase
-                email = user.email.lower()
-
+                # Try to send a welcome email after a successful login
                 try:
                     subject = 'Welcome to My-PetShop!'
-                    
-                    # Generate product link
                     product_link = request.build_absolute_uri(reverse('products'))
-                    
+
                     # Render the HTML email template
                     html_message = render_to_string('email.html', {
                         'username': user.username,
                         'product_link': product_link,
                     })
 
-                    recipient_list = [email]  # Use the lowercased email
-
+                    # Send the email
                     send_mail(
                         subject,
                         '',  # Leave the plain text version empty
                         settings.DEFAULT_FROM_EMAIL,
-                        recipient_list,
+                        [user.email],
                         fail_silently=False,
                         html_message=html_message  # Pass the rendered HTML message
                     )
@@ -84,13 +81,11 @@ def login_form(request):
 
                 return redirect('index')
             else:
-                messages.error(request, 'Invalid username or password.')
-        else:
-            messages.error(request, 'Invalid username or password.')
-    else:
-        form = AuthenticationForm()
-
-    return render(request, 'login.html', {'form': form})
+                return render(request, 'login.html', {'error': 'Invalid email or password'})
+        except User.DoesNotExist:
+            return render(request, 'login.html', {'error': 'Invalid email or password'})
+    
+    return render(request, 'login.html')
 
 # Logout
 def logout_form(request):
