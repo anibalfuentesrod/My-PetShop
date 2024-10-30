@@ -27,6 +27,9 @@
         <div class="info-item">
             <strong>Member since:</strong> <span>{{ date_joined|date:"F j, Y" }}</span>
         </div>
+        <div class="shipping-button-container">
+            <a href="{% url 'shipping_address' %}" class="btn-update-shipping">Update Shipping Address</a>
+        </div>
     </div>
 </div>
 {% endblock %}
