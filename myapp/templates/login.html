@@ -7,38 +7,14 @@
     <div class="card">
         <h2 class="form-title">Login</h2>
 
-        <form method="POST" class="form">
+        <form method="post" action="{% url 'login' %}">
             {% csrf_token %}
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
             
-            <!-- Campo de Username -->
-            {{ form.username.label_tag }}
-            {{ form.username }}
-            <!-- Mostrar el error directamente debajo del campo de username -->
-            {% if form.username.errors %}
-                <div class="error-message">
-                    {{ form.username.errors.0 }}
-                </div>
-            {% endif %}
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
             
-            <!-- Campo de Password -->
-            {{ form.password.label_tag }}
-            {{ form.password }}
-            <!-- Mostrar el error directamente debajo del campo de password -->
-            {% if form.password.errors %}
-                <div class="error-message">
-                    {{ form.password.errors.0 }}
-                </div>
-            {% endif %}
-
-            <!-- Mostrar errores generales (no relacionados con campos) -->
-            {% if form.non_field_errors %}
-                <div class="error-message">
-                    {% for error in form.non_field_errors %}
-                        <p>{{ error }}</p>
-                    {% endfor %}
-                </div>
-            {% endif %}
-
             <button type="submit" class="btn-submit">Login</button>
         </form>
 
