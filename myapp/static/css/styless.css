@@ -11,7 +11,7 @@ body {
 /* Navbar Styles */
 .navbar {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
     background-color: #ffc107;
     color: white;
