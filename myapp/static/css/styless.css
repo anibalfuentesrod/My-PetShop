@@ -161,9 +161,8 @@ body {
 .landing-section {
     text-align: center;
     padding: 50px;
-    color: white;
+    color: #e83535;
     background: rgba(0, 0, 0, 0.6); /* Transparent overlay */
-    margin-bottom: 50px;
 }
 
 .landing-content h1 {
