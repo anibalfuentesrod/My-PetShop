@@ -1,67 +1,46 @@
-/* General Styles */
+/* General Body Styles */
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
+    background-image: url("{% static 'images/background.png' %}"); /* Use the same background */
+    background-size: cover;
+    background-position: center;
 }
 
-/* Header Styling */
-.header {
-    background-color: #e8491d;
-    color: #fff;
-    text-align: center;
-    padding: 40px 20px;
+/* Navbar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #ffca28;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.header h1 {
-    margin: 0;
-    font-size: 3rem;
-}
-
-.header p {
-    margin-top: 10px;
-    font-size: 1.2rem;
-}
-
-/* Landing Section Styling */
-.landing-section {
+.nav-links {
+    list-style: none;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    padding: 60px 20px;
-    background-color: #ffca28;
+    gap: 20px;
 }
 
-.landing-content {
-    width: 80%;
-    max-width: 1200px;
-    text-align: center;
-}
-
-.text-block h2 {
-    font-size: 2rem;
-    color: #e83535;
-    margin-bottom: 10px;
-}
-
-.text-block p {
-    font-size: 1.2rem;
-    margin-bottom: 20px;
-    color: #333;
-}
-
-/* Call-to-Action Button */
-.button {
-    display: inline-block;
-    font-size: 1.2rem;
-    color: #fff;
-    background-color: #e8491d;
-    padding: 12px 30px;
+.nav-links a {
     text-decoration: none;
+    color: black;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: #e83535;
+}
+
+.button {
+    background-color: #e83535;
+    color: white;
+    padding: 10px 20px;
     border-radius: 5px;
+    text-decoration: none;
     transition: background-color 0.3s ease;
 }
 
@@ -69,59 +48,85 @@ body {
     background-color: #d7381f;
 }
 
-/* Image Grid Styling */
-.image-grid {
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-    margin-top: 20px;
-}
-
-.image-grid img {
-    width: 48%;
-    max-width: 400px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Footer Styling */
-.footer {
-    background-color: #35424a;
-    color: #fff;
+/* Intro Section */
+.landing-section {
     text-align: center;
-    padding: 15px 0;
-    position: relative;
-    width: 100%;
-    bottom: 0;
+    padding: 50px;
+    color: white;
+    background: rgba(0, 0, 0, 0.6); /* Transparent overlay */
+    margin-bottom: 50px;
+}
+
+.landing-content h1 {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+.landing-content p {
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+}
+
+.image-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.image-container img {
+    width: 300px;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Feature Section Placeholder */
+.feature-section {
+    text-align: center;
+    padding: 50px;
+    background-color: #fff3e0;
+}
+
+/* About Section */
+.about-section {
+    background-color: #ffe082;
+    padding: 50px;
+    text-align: center;
+}
+
+.about-section h2 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+.about-section p {
+    font-size: 1.2rem;
+    line-height: 1.8;
+    margin-bottom: 20px;
+}
+
+.team-links a {
+    color: #e83535;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.team-links a:hover {
+    text-decoration: underline;
 }
 
 /* Responsive Styles */
 @media (max-width: 768px) {
-    .header h1 {
-        font-size: 2rem;
+    .landing-content h1 {
+        font-size: 2.5rem;
     }
 
-    .header p {
-        font-size: 1rem;
+    .landing-content p {
+        font-size: 1.2rem;
     }
 
-    .landing-content {
-        width: 90%;
-    }
-
-    .text-block h2 {
-        font-size: 1.5rem;
-    }
-
-    .text-block p {
-        font-size: 1rem;
-    }
-
-    .image-grid {
-        flex-direction: column;
-    }
-
-    .image-grid img {
+    .image-container img {
         width: 100%;
+        max-width: 200px;
     }
 }
