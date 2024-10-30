@@ -4,22 +4,91 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Learn more about My PetShop and what we offer.">
-    <title>Landing Page</title>
-    <!-- Load static files -->
+    <title>Landing Page - My PetShop</title>
     {% load static %}
-    <!-- Link to the specific CSS for this page -->
     <link rel="stylesheet" href="{% static 'css/styless.css' %}">
+    <style>
+        body {
+            background-image: url("{% static 'images/background.png' %}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+    </style>
 </head>
 <body>
-    <!-- Main section for the landing page -->
-    <section class="landing-section">
+    <!-- Navigation Bar -->
+<nav class="navbar">
+    <!-- Logo Section -->
+    <div class="logo">
+        <a href="{% url 'index' %}">
+            My
+            <img src="{% static 'images/logo.png' %}" alt="Paw Print Logo" class="paw-logo">
+            Petshop
+        </a>
+    </div>
+            <div class="nav-links">
+                <a href="#intro">Intro</a>
+                <a href="#features">Features</a>
+                <a href="#about">About</a>
+            </div>
+
+    <!-- Hamburger menu for mobile view -->
+    <div class="hamburger" id="hamburger">
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+</nav>
+    </header>
+
+    <!-- Intro Section -->
+    <section id="intro" class="landing-section">
         <div class="landing-content">
-            <h1>Welcome to My PetShop</h1>
-            <p>Your trusted destination for all things pet-related!</p>
-            <img src="{% static 'images/petshop1.png' %}" alt="PetShop Image 1">
-            <img src="{% static 'images/petshop2.png' %}" alt="PetShop Image 2">
-            <p>Discover the best products and services for your beloved pets.</p>
+            <h1>Welcome to My PetShop!</h1>
+            <p>"A World Where Paws and Dreams Collide!"</p>
+            <div class="image-container">
+                <img src="{% static 'images/petshop1.png' %}" alt="PetShop Image 1">
+            </div>
         </div>
+    </section>
+
+    <!-- Feature Section Placeholder -->
+    <section id="features" class="feature-section">
+        <h2>Our Top Features</h2>
+        <p>This section is under development. Stay tuned for exciting updates!</p>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about-section">
+        <h2>About My PetShop</h2>
+        <p>
+            My partner and I are passionate animal lovers. With his father running a pet shop,
+            we were inspired to build a beautiful, engaging web application that reflects our love for pets.
+        </p>
+        <p>
+            Our challenge was to design something that is not only functional but also eye-catching and fun. 
+            We wanted to capture the joy of being a pet owner in every detail of this project.
+        </p>
+        <p>
+            This project also serves as a portfolio project for <a href="#" target="_blank">Holberton School</a>. 
+        </p>
+
+        <div class="team-links">
+            <a href="#" target="_blank">LinkedIn</a> |
+            <a href="#" target="_blank">GitHub</a> |
+            <a href="#" target="_blank">Twitter</a>
+        </div>
+        <p>
+            Explore the code behind this project on our <a href="#" target="_blank">GitHub Repository</a>.
+        </p>
+        <p>
+            Click below to enter our app!
+        </p>
+        <a 
+            href="{% url 'index' %}" class="button">Explore My PetShop
+        </a>
     </section>
 </body>
 </html>
