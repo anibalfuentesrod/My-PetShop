@@ -95,7 +95,7 @@ body {
     transform: translateY(-50%);
     z-index: 10; /* Ensure it's on top */
     padding: 10px;
-    background-color: #fbfbfb;;
+    background-color: #e83535;
     border-radius: 8px;
 }
 
