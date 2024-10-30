@@ -4,22 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Learn more about My PetShop and what we offer.">
-    <title>Landing Page</title>
-    <!-- Load static files -->
+    <title>Welcome to My PetShop</title>
+
     {% load static %}
-    <!-- Link to the specific CSS for this page -->
     <link rel="stylesheet" href="{% static 'css/styless.css' %}">
 </head>
 <body>
-    <!-- Main section for the landing page -->
+    <!-- Header Section -->
+    <header class="header">
+        <h1>Welcome to My PetShop</h1>
+        <p>Your one-stop shop for everything your pet needs!</p>
+    </header>
+
+    <!-- Landing Section -->
     <section class="landing-section">
         <div class="landing-content">
-            <h1>Welcome to My PetShop</h1>
-            <p>Your trusted destination for all things pet-related!</p>
-            <img src="{% static 'images/petshop1.png' %}" alt="PetShop Image 1">
-            <img src="{% static 'images/petshop2.png' %}" alt="PetShop Image 2">
-            <p>Discover the best products and services for your beloved pets.</p>
+            <div class="text-block">
+                <h2>Your Pets Deserve the Best</h2>
+                <p>We offer high-quality products and reliable services for your beloved furry friends. Explore our collection today and give your pet the care they deserve.</p>
+                <a href="{% url 'products' %}" class="button">Explore Now</a>
+            </div>
+            <div class="image-grid">
+                <img src="{% static 'images/petshop1.png' %}" alt="PetShop Image 1">
+                <img src="{% static 'images/petshop2.png' %}" alt="PetShop Image 2">
+            </div>
         </div>
     </section>
+
+    <!-- Footer Section -->
+    <footer class="footer">
+        <p>&copy; 2024 My PetShop. All rights reserved.</p>
+    </footer>
 </body>
 </html>

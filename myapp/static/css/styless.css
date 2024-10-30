@@ -1,0 +1,127 @@
+/* General Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+/* Header Styling */
+.header {
+    background-color: #e8491d;
+    color: #fff;
+    text-align: center;
+    padding: 40px 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 3rem;
+}
+
+.header p {
+    margin-top: 10px;
+    font-size: 1.2rem;
+}
+
+/* Landing Section Styling */
+.landing-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 60px 20px;
+    background-color: #ffca28;
+}
+
+.landing-content {
+    width: 80%;
+    max-width: 1200px;
+    text-align: center;
+}
+
+.text-block h2 {
+    font-size: 2rem;
+    color: #e83535;
+    margin-bottom: 10px;
+}
+
+.text-block p {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Call-to-Action Button */
+.button {
+    display: inline-block;
+    font-size: 1.2rem;
+    color: #fff;
+    background-color: #e8491d;
+    padding: 12px 30px;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: #d7381f;
+}
+
+/* Image Grid Styling */
+.image-grid {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.image-grid img {
+    width: 48%;
+    max-width: 400px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Footer Styling */
+.footer {
+    background-color: #35424a;
+    color: #fff;
+    text-align: center;
+    padding: 15px 0;
+    position: relative;
+    width: 100%;
+    bottom: 0;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .header h1 {
+        font-size: 2rem;
+    }
+
+    .header p {
+        font-size: 1rem;
+    }
+
+    .landing-content {
+        width: 90%;
+    }
+
+    .text-block h2 {
+        font-size: 1.5rem;
+    }
+
+    .text-block p {
+        font-size: 1rem;
+    }
+
+    .image-grid {
+        flex-direction: column;
+    }
+
+    .image-grid img {
+        width: 100%;
+    }
+}
