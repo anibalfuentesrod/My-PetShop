@@ -51,13 +51,16 @@ My-PetShop is an online platform where users can browse and purchase pet product
 ## Contact
 
 - **Project Maintainers:**
-  - [Anibal Fuentes](https://github.com/your-username)
-  - [Kryss Babilonia](https://github.com/partner-username)
+  - [Anibal Fuentes](https://github.com/anibalfuentesrod)
+  - [Kryss Babilonia](https://github.com/kryssbm99)
 
-- **Follow Us:**
-  - [LinkedIn](https://www.linkedin.com)
-  - [GitHub](https://github.com)
-  - [Twitter](https://twitter.com)
+- **Follow Anibal:**
+  - [LinkedIn](https://www.linkedin.com/in/anibal-fuentes-b75443315/)
+  - [GitHub](https://github.com/anibalfuentesrod)
+
+- **Follow Kryss:**
+  - [LinkedIn](https://www.linkedin.com/in/kryssbm99/)
+  - [GitHub](https://github.com/kryssbm99)
 
 
 ---
