@@ -75,6 +75,7 @@ body {
     font-weight: bold;
     transition: color 0.3s ease, background-color 0.3s ease;
     border-radius: 20px; /* Rounded corners */
+    text-shadow: 2px 2px 4px #000000;
 }
 
 .navbar .nav-links a:hover {
@@ -168,11 +169,13 @@ body {
 .landing-content h1 {
     font-size: 3rem;
     margin-bottom: 10px;
+    text-shadow: 2px 2px 4px #000000;
 }
 
 .landing-content p {
     font-size: 1.5rem;
     margin-bottom: 30px;
+    text-shadow: 2px 2px 4px #000000;
 }
 
 .image-container {
