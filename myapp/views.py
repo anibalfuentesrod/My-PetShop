@@ -37,13 +37,16 @@ def register(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('login')
+            email = form.cleaned_data.get('email')
+            if User.objects.filter(email=email).exists():
+                form.add_error('email', 'A user with that email already exists.')
+            else:
+                form.save()
+                return redirect('login')
     else:
         form = CustomUserCreationForm()
     return render(request, 'register.html', {'form': form})
 
-# Login
 # Login
 def login_form(request):
     if request.method == 'POST':
