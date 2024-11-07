@@ -26,7 +26,6 @@ body {
 .navbar .logo a {
     text-decoration: none;
     color: #e83535; /* Inherit the parent color (red #e83535) */
-    font-family: 'Cherry Swash', cursive;
     font-size: 40px; /* Adjust font size */
     letter-spacing: -1px; /* Reduce space between letters */
     line-height: 1; /* Ensure close vertical alignment */
