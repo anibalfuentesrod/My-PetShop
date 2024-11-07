@@ -8,10 +8,23 @@ class ShippingAddressForm(forms.ModelForm):
         model = ShippingAddress
         fields = ['direccion', 'ciudad', 'estado', 'codigo_postal', 'country']
         widgets = {
-            'country': forms.TextInput(attrs={'placeholder': 'Enter your country'}),
+            'direccion': forms.TextInput(attrs={'placeholder': 'e.g., Carretera 123'}),
+            'ciudad': forms.TextInput(attrs={'placeholder': 'e.g., San Juan'}),
+            'estado': forms.TextInput(attrs={'placeholder': 'e.g., Puerto Rico'}),
+            'codigo_postal': forms.TextInput(attrs={'placeholder': 'e.g., 00685'}),
+            'country': forms.TextInput(attrs={'placeholder': 'e.g., US', 'style': 'text-transform: uppercase;'}),
+        }
+        help_texts = {
+            'direccion': 'Enter your street address.',
+            'ciudad': 'Enter your city.',
+            'estado': 'Enter your state or region.',
+            'codigo_postal': 'Enter your postal code.',
+            'country': 'Enter your country code in uppercase (e.g., US).',
         }
 
-
+    def clean_country(self):
+        country = self.cleaned_data.get('country')
+        return country.upper()
 
 class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(required=True)
