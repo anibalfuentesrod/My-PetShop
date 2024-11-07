@@ -2,7 +2,7 @@
 <!-- Load static files -->
 {% load static %}
 
-{% block title %}Pago Cancelado!!{% endblock title %}
+{% block title %}Payment Cancelled!!{% endblock title %}
 
 {% block content %}
 <div class="cancel-container">
@@ -12,13 +12,13 @@
     </div>
     
     <!-- Message for the User -->
-    <h2 class="cancel-message">El pago ha sido cancelado</h2>
-    <p class="cancel-description">Parece que has cancelado el proceso de pago. Si esto fue un error, puedes intentarlo de nuevo.</p>
+    <h2 class="cancel-message">The payment has been cancelled</h2>
+    <p class="cancel-description">It looks like you have cancelled the payment process. If this was a mistake, you can try again.</p>
     
     <!-- Call to Action Buttons -->
     <div class="cta-buttons">
-        <a href="{% url 'products' %}" class="btn-primary">Regresar a la tienda</a>
-        <a href="{% url 'view_cart' %}" class="btn-secondary">Regresar al carrito</a>
+        <a href="{% url 'products' %}" class="btn-primary">Return to Store</a>
+        <a href="{% url 'view_cart' %}" class="btn-secondary">Return to Cart</a>
     </div>
 </div>
 {% endblock content %}
