@@ -1646,11 +1646,16 @@ textarea {
     font-size: 1.2em;
 }
 .btn-update-shipping {
-    background-color: #e83535;
-    color: white;
-    padding: 8px 12px;
+    color: #e83535;
+    font-weight: bold;
     border: none;
-    border-radius: 4px;
+    border-radius: 1px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    text-decoration: none;
 }
+
+.btn-update-shipping:hover {
+    color: #e55353;
+}
+    
