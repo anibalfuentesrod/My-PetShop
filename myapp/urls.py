@@ -19,7 +19,6 @@ urlpatterns = [
     path('cart/add/<int:product_id>/', views.add_to_cart, name='add_to_cart'),
     path('cart/remove/<int:item_id>/', views.remove_from_cart, name='remove_from_cart'),
     path('shipping-address/', views.shipping_address_view, name='shipping_address'),
-    # NEW CODE
     path('contact/', views.contact, name='contact'),
     path('terms/', views.terms, name='terms'),
     path('privacy/', views.privacy, name='privacy'),

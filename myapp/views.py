@@ -400,4 +400,12 @@ def shipping(request):
 
 
 def landing(request):
-    return render(request, 'landing_page.html')
+    links = {
+        'anibal_linkedln': 'https://www.linkedin.com/in/anibalfuentess/',
+        'anibal_github': 'https://github.com/anibalfuentesrod',
+        'kryss_linkedln': 'https://www.linkedin.com/in/kryssbm99/',
+        'kryss_github': 'https://github.com/kryssbm99',
+        'holberton': 'https://holbertonschoolpr.com/index.html',
+        'github': 'https://github.com/anibalfuentesrod/My-PetShop'
+    }
+    return render(request, 'landing_page.html', links)
