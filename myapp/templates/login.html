@@ -18,6 +18,10 @@
             <button type="submit" class="btn-submit">Login</button>
         </form>
 
+        {% if error %}
+            <div class="error-message" style="color: #e74c3c;">{{ error }}</div>
+        {% endif %}
+
         <p>Don't have an account? <a href="{% url 'register' %}">Register here</a></p>
     </div>
 </div>
