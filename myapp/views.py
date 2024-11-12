@@ -41,25 +41,9 @@ def register(request):
             if User.objects.filter(email=email).exists():
                 form.add_error('email', 'A user with that email already exists.')
             else:
-                form.save()
-                return redirect('login')
-    else:
-        form = CustomUserCreationForm()
-    return render(request, 'register.html', {'form': form})
-
-# Login
-def login_form(request):
-    if request.method == 'POST':
-        email = request.POST['email']
-        password = request.POST['password']
-        
-        try:
-            user = User.objects.get(email=email)
-            user = authenticate(request, username=user.username, password=password)
-            if user is not None:
-                login(request, user)
-
-                # Try to send a welcome email after a successful login
+                user = form.save()
+                
+                # Send welcome email after successful registration
                 try:
                     subject = 'Welcome to My-PetShop!'
                     product_link = request.build_absolute_uri(reverse('products'))
@@ -82,6 +66,22 @@ def login_form(request):
                 except Exception as e:
                     print(f"Failed to send welcome email: {e}")
 
+                return redirect('login')
+    else:
+        form = CustomUserCreationForm()
+    return render(request, 'register.html', {'form': form})
+
+# Login
+def login_form(request):
+    if request.method == 'POST':
+        email = request.POST['email']
+        password = request.POST['password']
+        
+        try:
+            user = User.objects.get(email=email)
+            user = authenticate(request, username=user.username, password=password)
+            if user is not None:
+                login(request, user)
                 return redirect('index')
             else:
                 return render(request, 'login.html', {'error': 'Invalid email or password'})
