@@ -249,7 +249,7 @@ a:link {
 
 .img {
     max-width: 100%;
-    height: 500px;
+    height: 800px;
     
 }
 
@@ -295,3 +295,4 @@ a:link {
     transform: translateY(-10px);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     
+}
